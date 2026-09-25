@@ -1,0 +1,60 @@
+# VPS production deploy — Traefik-fronted, GHCR image, no staging tier.
+# Runtime secrets (DB creds, secret key, etc) come from .env.local on the VPS — never committed.
+
+services:
+  inventory-app-prod:
+    image: ghcr.io/zunkireelabs/inventory:main
+    container_name: inventory-app-prod
+    restart: unless-stopped
+    env_file:
+      - .env.local
+    volumes:
+      - inventory_data:/home/inventree/data
+    networks:
+      - hosting
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=hosting"
+      - "traefik.http.routers.inventory-app-prod.rule=Host(`inventory-a.zunkireelabs.com`)"
+      - "traefik.http.routers.inventory-app-prod.entrypoints=websecure"
+      - "traefik.http.routers.inventory-app-prod.tls=true"
+      - "traefik.http.routers.inventory-app-prod.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.inventory-app-prod-http.rule=Host(`inventory-a.zunkireelabs.com`)"
+      - "traefik.http.routers.inventory-app-prod-http.entrypoints=web"
+      - "traefik.http.routers.inventory-app-prod-http.middlewares=inventory-app-prod-redirect"
+      - "traefik.http.middlewares.inventory-app-prod-redirect.redirectscheme.scheme=https"
+      - "traefik.http.services.inventory-app-prod.loadbalancer.server.port=8000"
+    healthcheck:
+      test: ["CMD-SHELL", "invoke server-health --address \"http://localhost:8000\""]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  inventory-worker-prod:
+    image: ghcr.io/zunkireelabs/inventory:main
+    container_name: inventory-worker-prod
+    command: invoke worker
+    restart: unless-stopped
+    depends_on:
+      inventory-app-prod:
+        condition: service_healthy
+    env_file:
+      - .env.local
+    volumes:
+      - inventory_data:/home/inventree/data
+    networks:
+      - hosting
+    healthcheck:
+      test: ["CMD-SHELL", "invoke worker-health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 180s
+
+networks:
+  hosting:
+    external: true
+
+volumes:
+  inventory_data:

@@ -1,0 +1,388 @@
+"""Custom mkdocs hooks, using the mkdocs-simple-hooks plugin."""
+
+import json
+import os
+import re
+from datetime import datetime
+from pathlib import Path
+
+import requests
+from packaging.version import Version
+
+here = Path(__file__).parent
+
+
+def fetch_rtd_versions():
+    """Get a list of RTD docs versions to build the version selector."""
+    print('Fetching documentation versions from ReadTheDocs')
+
+    versions = []
+
+    def make_request(url, headers):
+        """Make a single request to the RTD API."""
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            print(f'Error fetching RTD versions: {response.status_code}')
+            return
+
+        data = json.loads(response.text)
+
+        for entry in data['results']:
+            slug = entry['slug']
+            ref = entry['ref']
+            url = entry['urls']['documentation']
+            aliases = []
+
+            if ref is not None:
+                aliases.append(slug)
+
+            version = ref or slug
+
+            if version == 'latest':
+                continue
+
+            versions.append({'version': version, 'title': version, 'aliases': aliases})
+
+        if data['next']:
+            make_request(data['next'], headers)
+
+    # Fetch the list of versions from the RTD API
+    token = os.environ.get('RTD_TOKEN', None)
+    if token:
+        headers = {'Authorization': f'Token {token}'}
+        url = 'https://readthedocs.org/api/v3/projects/inventree/versions/?active=true&limit=50'
+        make_request(url, headers)
+    else:
+        print('No RTD token found - skipping RTD version fetch')
+
+    # Sort versions by version number
+    versions = sorted(versions, key=lambda x: Version(x['version']), reverse=True)
+
+    # Add "latest" version first
+    if not any(x['title'] == 'latest' for x in versions):
+        versions.insert(
+            0,
+            {
+                'title': 'Development',
+                'version': 'latest',
+                'aliases': ['main', 'latest', 'development'],
+            },
+        )
+
+    # Ensure we have the 'latest' version
+    current_version = os.environ.get('READTHEDOCS_VERSION', None)
+
+    if current_version and not any(x['title'] == current_version for x in versions):
+        versions.append({
+            'version': current_version,
+            'title': current_version,
+            'aliases': [],
+        })
+
+    output_filename = here.joinpath('versions.json')
+
+    print('Discovered the following versions:')
+    print(versions)
+
+    with open(output_filename, 'w', encoding='utf-8') as file:
+        json.dump(versions, file, indent=2)
+
+
+def get_release_data():
+    """Return InvenTree release information.
+
+    - First look to see if 'releases.json' file exists
+    - If data does not exist in this file, request via the github API
+    """
+    json_file = here.parent.joinpath('generated', 'releases.json')
+
+    releases = []
+
+    if json_file.exists():
+        # Release information has been cached to file
+
+        print("Loading release information from 'releases.json'")
+        with open(json_file, encoding='utf-8') as f:
+            return json.loads(f.read())
+
+    # Download release information via the GitHub API
+    print('Fetching InvenTree release information from api.github.com:')
+    releases = []
+
+    # Keep making API requests until we run out of results
+    page = 1
+
+    while 1:
+        url = f'https://api.github.com/repos/inventree/inventree/releases?page={page}&per_page=150'
+
+        attempts = 5
+
+        while attempts > 0:
+            attempts -= 1
+
+            response = requests.get(url, timeout=30)
+            if response.status_code == 200:
+                break
+
+        assert response.status_code == 200, (
+            f'Failed to fetch release data: {response.status_code} - {url}'
+        )
+
+        data = json.loads(response.text)
+
+        if len(data) == 0:
+            break
+
+        for item in data:
+            releases.append(item)
+
+        page += 1
+
+    # Cache these results to file
+    with open(json_file, 'w', encoding='utf-8') as f:
+        print("Saving release information to 'releases.json'")
+        f.write(json.dumps(releases))
+
+    return releases
+
+
+def on_config(config, *args, **kwargs):
+    """Run when the mkdocs config is loaded.
+
+    We want to be able to provide a *dynamic* config.site_url parameter to mkdocs,
+    which tells it the base url, e.g.
+
+    - https://readthedocs.io/en/latest
+    - https://readthedocs.io/de/0.5.1
+
+    Further, we need to know if we are building on readthedocs at all!
+
+    readthedocs provides some environment variables:
+    - https://docs.readthedocs.io/en/stable/builds.html#build-environment
+
+    We can use these to determine (at run time) where we are hosting
+    """
+    rtd = os.environ.get('READTHEDOCS', None)
+
+    # Note: version selection is handled by RTD internally
+    # Check for 'versions.json' file
+    # If it does not exist, we need to fetch it from the RTD API
+    # if here.joinpath('versions.json').exists():
+    #    print("Found 'versions.json' file")
+    # else:
+    #    fetch_rtd_versions()
+
+    if rtd:
+        rtd_version = os.environ.get('READTHEDOCS_VERSION')
+        rtd_language = os.environ.get('READTHEDOCS_LANGUAGE')
+
+        site_url = f'https://docs.inventree.org/{rtd_language}/{rtd_version}'
+        assets_dir = f'/{rtd_language}/{rtd_version}/assets'
+
+        print('Building within READTHEDOCS environment!')
+        print(f' - Version: {rtd_version}')
+        print(f' - Language: {rtd_language}')
+
+        # Add *all* readthedocs related keys
+        readthedocs = {}
+
+        for key in os.environ:
+            if key.startswith('READTHEDOCS_'):
+                k = key.replace('READTHEDOCS_', '').lower()
+                readthedocs[k] = os.environ[key]
+
+        # Supply this to the context
+        config['readthedocs'] = readthedocs
+
+        # Determine if we want to display a 'version' banner
+        # Basically we do, *unless* we are displaying the "stable" version
+        config['version_banner'] = rtd_version != 'stable'
+
+    else:
+        print("'READTHEDOCS' environment variable not found")
+        print('Building for localhost configuration!')
+
+        assets_dir = '/assets'
+        site_url = config['site_url']
+
+        config['readthedocs'] = False
+
+    config['assets_dir'] = assets_dir
+    config['site_url'] = site_url
+
+    print(f"config.site_url = '{site_url}'")
+    print(f"config.assets_dir = '{assets_dir}'")
+
+    release_data = get_release_data()
+
+    releases = []
+
+    for item in release_data:
+        # Ignore draft releases
+        if item['draft']:
+            continue
+
+        tag = item['tag_name']
+
+        # Check that the tag is formatted correctly
+        re.match(r'^\d+\.\d+\.\d+$', tag)
+
+        if not re.match:
+            print(f'Found badly formatted release: {tag}')
+            continue
+
+        # Check if there is a local file with release information
+        local_path = here.joinpath('releases', f'{tag}.md')
+
+        if local_path.exists():
+            item['local_path'] = local_path
+
+        # Extract the date
+        item['date'] = item['published_at'].split('T')[0]
+
+        date = datetime.fromisoformat(item['date'])
+
+        # First tagged docker release was 2021-04-18
+        if date > datetime(year=2021, month=4, day=17):
+            item['docker'] = True
+
+        # Add a "prefix" so we can split by sub version
+        item['prefix'] = '.'.join(tag.split('.')[:-1])
+
+        releases.append(item)
+
+    print(f'- found {len(releases)} releases.')
+
+    # Sort releases by descending date
+    config['releases'] = sorted(releases, key=lambda it: it['date'], reverse=True)
+
+    return config
+
+
+def check_status_codes_documented(gen_base):
+    """Check that every 'StatusCode' class is documented somewhere in the docs.
+
+    A class counts as documented if the `statuscodes()` macro has been called
+    for it from at least one markdown page (recorded in 'observed_status_codes.json').
+    """
+    expected_status_codes_file = gen_base.joinpath('inventree_status_codes.json')
+    observed_status_codes_file = gen_base.joinpath('observed_status_codes.json')
+
+    with open(observed_status_codes_file, encoding='utf-8') as f:
+        observed_status_codes = json.loads(f.read())
+
+    with open(expected_status_codes_file, encoding='utf-8') as f:
+        expected_status_codes = json.loads(f.read())
+
+    missing = [
+        name for name in expected_status_codes if name not in observed_status_codes
+    ]
+
+    if missing:
+        raise NotImplementedError(
+            'Missing Status Codes:\n'
+            + f'There are {len(missing)} status code classes not documented via the `statuscodes()` macro:\n- '
+            + '\n- '.join(missing)
+        )
+
+
+def check_status_code_values_documented(gen_base):
+    """Check that every value of every 'StatusCode' class has a description.
+
+    Descriptions are sourced from the class docstring's `Attributes:` block (see
+    `export_status_codes.py` / e.g. `build.status_codes.BuildStatus`) - a status
+    value with no matching `Attributes:` entry exports with an empty description,
+    which this check catches.
+    """
+    expected_status_codes_file = gen_base.joinpath('inventree_status_codes.json')
+
+    with open(expected_status_codes_file, encoding='utf-8') as f:
+        expected_status_codes = json.loads(f.read())
+
+    missing = [
+        f'{class_name}.{value["name"]}'
+        for class_name, info in expected_status_codes.items()
+        for value in info['values']
+        if not value['description']
+    ]
+
+    if missing:
+        raise NotImplementedError(
+            'Missing Status Code Descriptions:\n'
+            + f'There are {len(missing)} status code values with no description in their '
+            + "class docstring's `Attributes:` block:\n- "
+            + '\n- '.join(missing)
+        )
+
+
+def on_post_build(*args, **kwargs):
+    """Run after the build is complete.
+
+    Here we check that all global settings and user settings are documented,
+    that every status code class is documented (via the `statuscodes` macro),
+    and that every individual status code value has a description.
+    """
+    here = Path(__file__).parent
+    gen_base = here.parent.joinpath('generated')
+
+    check_status_codes_documented(gen_base)
+    check_status_code_values_documented(gen_base)
+
+    expected_settings_file = gen_base.joinpath('inventree_settings.json')
+    observed_settings_file = gen_base.joinpath('observed_settings.json')
+
+    with open(observed_settings_file, encoding='utf-8') as f:
+        observed_settings = json.loads(f.read())
+
+    with open(expected_settings_file, encoding='utf-8') as f:
+        expected_settings = json.loads(f.read())
+
+    ignored_settings = {
+        'global': ['SERVER_RESTART_REQUIRED'],
+        'user': ['LAST_USED_PRINTING_MACHINES'],
+        'config': [
+            'INVENTREE_DB_TCP_KEEPALIVES',
+            'INVENTREE_DB_TCP_KEEPALIVES_IDLE',
+            'INVENTREE_DB_TCP_KEEPALIVES_INTERVAL',
+            'INVENTREE_DB_TCP_KEEPALIVES_COUNT',
+            'INVENTREE_DB_ISOLATION_SERIALIZABLE',
+            'INVENTREE_DB_WAL_MODE',
+            'INVENTREE_PLUGIN_DIR',
+            'INVENTREE_DOCKER',
+            'INVENTREE_FLAGS',
+            'INVENTREE_REMOTE_LOGIN',
+            'INVENTREE_REMOTE_LOGIN_HEADER',
+            'TEST_TRANSLATIONS',
+            'INVENTREE_FRONTEND_URL_BASE',
+            'INVENTREE_FRONTEND_API_HOST',
+            'INVENTREE_FRONTEND_SETTINGS',
+            'INVENTREE_LOGOUT_REDIRECT_URL',
+        ],
+    }
+
+    for group in ['global', 'user', 'config']:
+        expected = expected_settings.get(group, {})
+        observed = observed_settings.get(group, {})
+        ignored = ignored_settings.get(group, [])
+
+        missing = []
+
+        for key in expected:
+            if key.startswith('_'):
+                # Ignore internal settings
+                continue
+
+            if key in ignored:
+                # Ignore settings that are not relevant
+                continue
+
+            if key not in observed:
+                missing.append(key)
+
+        if missing:
+            raise NotImplementedError(
+                'Missing Settings:\n'
+                + f"There are {len(missing)} missing settings in the '{group}' group:\n- "
+                + '\n- '.join(missing)
+            )

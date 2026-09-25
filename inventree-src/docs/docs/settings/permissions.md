@@ -1,0 +1,68 @@
+---
+title: User Permissions
+---
+
+## Permissions
+
+InvenTree provides access control to various features and data, by assigning each *user* to one (or more) *groups* which have multiple *roles* assigned.
+
+!!! info "Superuser"
+    The superuser account is afforded *all* permissions across an InvenTree installation. This includes the [Database Admin interface](./db_admin.md), web interface, and API.
+
+### User
+
+A *user* is a single unique account with login credentials. By default, a user is not afforded *any* permissions, and the user must be assigned to the relevant group for the permissions to be assigned.
+
+### Group
+
+A *group* is a named set of zero or more users. Each group is assigned permissions against each possible role.
+
+### Role
+
+A *role* is a set of distinct permissions linked to a given subset of InvenTree functionality (more on this below).
+
+## Roles
+
+InvenTree functionality is split into a number of distinct roles. A group will have a set of permissions assigned to each of the following roles:
+
+{{ roles() }}
+
+{{ image("admin/roles.png", "Roles") }}
+
+### Role Permissions
+
+Within each role, there are four levels of available permissions:
+
+| Permission | Description |
+| ---------- | ----------- |
+| **View** | The *view* permission allows viewing of content related to the particular role |
+| **Change** | The *change* permission allows the user to edit / alter / change data associated with the particular role |
+| **Add** | The *add* permission allows the user to add / create database records associated with the particular role |
+| **Delete** | The *delete* permission allows the user to delete / remove database records associated with the particular role |
+
+## Dangerous User Flags
+
+In addition to the above permissions, there are two special flags that can be assigned to a user:
+- **Staff** - A user with the *staff* flag is able to access the [Database Admin interface](./db_admin.md), and can trigger dangerous actions that might have a security impact such as changing parsable files on the server (templates / reports / plugins). Some of these actions require the *admin* role to be assigned as well.
+- **Superuser** - A user with the *superuser* flag is able to access and change all data and functions of InvenTree. A superuser can modify and access all data that the InvenTree installation / server has access to - including shell access on the server OS itself. This is a very powerful flag, and should be used with caution.
+
+It is strongly recommended to register any users with staff / superuser flags with strong MFA methods to reduce the risk of unauthorized access. These accounts should be used with caution, and should not be used for day-to-day operations.
+
+Practicing account tiering is strongly recommended.
+
+
+## Database Admin Permissions
+
+If a user does not have the required permissions to perform a certain action in the [Database Admin interface](./db_admin.md), those options will not be displayed.
+
+If a user is expecting a certain option to be available in the Database Admin interface, but it is not present, it is most likely the case that the user does not have those permissions assigned.
+
+## Web Interface Permissions
+
+When using the InvenTree web interface, certain functions may not be available for a given user, depending on their permissions. In this case, user-interface elements may be disabled, or may be removed.
+
+## API Permissions
+
+When using the InvenTree API, certain endpoints or actions may be inaccessible for a given user, depending on their permissions.
+
+As the API is used extensively within the web interface, this means that many data tables may also be impacted by user permissions.

@@ -1,0 +1,135 @@
+# Settings
+source_url=${args[source]}
+publisher=${args[publisher]}
+# Flags
+no_call=${args[--no-call]}
+dry_run=${args[--dry-run]}
+
+REQS="curl"
+
+function do_call() {
+    if [[ $dry_run ]]; then
+        echo -e "### DRY RUN: \n$1"
+    else
+        $1
+    fi
+}
+
+function get_distribution {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        OS=$NAME
+        VER=$VERSION_ID
+    elif type lsb_release >/dev/null 2>&1; then
+        OS=$(lsb_release -si)
+        VER=$(lsb_release -sr)
+    elif [ -f /etc/lsb-release ]; then
+        . /etc/lsb-release
+        OS=$DISTRIB_ID
+        VER=$DISTRIB_RELEASE
+    elif [ -f /etc/debian_version ]; then
+        OS=Debian
+        VER=$(cat /etc/debian_version)
+    elif [ -f /etc/SuSe-release ]; then
+        OS=SEL
+    elif [ -f /etc/redhat-release ]; then
+        OS=RedHat
+    else
+        OS=$(uname -s)
+        VER=$(uname -r)
+    fi
+}
+
+echo "### Installer for InvenTree - source: $publisher/$source_url"
+
+# Check if os and version is supported
+get_distribution
+echo "### Detected distribution: $OS $VER"
+SUPPORTED=true          # is this OS supported?
+OLD_VERSION=false       # is this an old OS that is no longer supported?
+
+DIST_OS=${OS,,}
+DIST_VER=$VER
+
+case "$OS" in
+    Ubuntu)
+        if [[ $VER == "24.04" ]]; then
+            SUPPORTED=true
+        elif [[ $VER == "26.04" ]]; then
+            SUPPORTED=true
+        elif [[ $VER == "20.04" ]]; then
+            SUPPORTED=false
+            OLD_VERSION=true
+        elif [[ $VER == "22.04" ]]; then
+            SUPPORTED=false
+            OLD_VERSION=true
+        else
+            SUPPORTED=false
+        fi
+        ;;
+    "Debian GNU/Linux" | "debian gnu/linux" | Raspbian)
+        if [[ $VER == "13" ]]; then
+            SUPPORTED=true
+        elif [[ $VER == "12" ]]; then
+            SUPPORTED=false
+            OLD_VERSION=true
+        elif [[ $VER == "11" ]]; then
+            SUPPORTED=false
+            OLD_VERSION=true
+        elif [[ $VER == "10" ]]; then
+            SUPPORTED=false
+            OLD_VERSION=true
+        else
+            SUPPORTED=false
+        fi
+        DIST_OS=debian
+        ;;
+    *)
+        echo "### Distribution not supported"
+        SUPPORTED=false
+        ;;
+esac
+
+if [[ $SUPPORTED != "true" ]]; then
+    echo "This OS is currently not supported."
+
+    if [[ $OLD_VERSION == "true" ]]; then
+        echo "The detected version ($OS $VER) is no longer supported but a newer version is."
+    fi
+
+    echo "Please install manually using https://docs.inventree.org/en/stable/start/install/"
+    echo "or check https://github.com/inventree/InvenTree/issues/3836 for packaging for your OS."
+    echo "If you think this is a bug please file an issue at"
+    echo "https://github.com/inventree/InvenTree/issues/new?template=install.yaml"
+
+    exit 1
+fi
+
+echo "### Installing required packages for download"
+for pkg in $REQS; do
+    if dpkg-query -W -f'${Status}' "$pkg" 2>/dev/null | grep -q "ok installed"; then
+        true
+    else
+        do_call "sudo apt-get -yqq install $pkg"
+    fi
+done
+
+echo "### Getting and adding key"
+sudo curl -fsSL "https://go.packager.io/srv/deb/$publisher/InvenTree/gpg-key.gpg" -o /usr/share/keyrings/InvenTree.gpg
+echo "### Adding package source"
+SOURCE_URL="https://go.packager.io/srv/$publisher/InvenTree/$source_url/installer/$DIST_OS/$DIST_VER.list"
+sudo curl -fsSL "$SOURCE_URL" > /etc/apt/sources.list.d/inventree.list
+
+echo "### Updating package lists"
+do_call "sudo apt-get update"
+
+# Set up environment for install
+echo "### Setting installer args"
+if [[ $no_call ]]; then
+    do_call "export NO_CALL=true"
+fi
+
+echo "### Installing InvenTree"
+do_call "sudo apt-get install inventree -y"
+
+echo "### Install done!"

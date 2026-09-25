@@ -1,0 +1,1215 @@
+"""Unit tests for plugins."""
+
+import os
+import shutil
+import subprocess
+import tempfile
+import textwrap
+from datetime import datetime
+from pathlib import Path
+from typing import Optional
+from unittest import mock
+from unittest.mock import patch
+
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.test import TestCase, override_settings
+
+import plugin.templatetags.plugin_extras as plugin_tags
+from InvenTree.unit_test import PluginRegistryMixin, TestQueryMixin
+from plugin import InvenTreePlugin, PluginMixinEnum
+from plugin.installer import install_plugin, update_plugins_file
+from plugin.registry import registry
+from plugin.samples.integration.another_sample import (
+    NoIntegrationPlugin,
+    WrongIntegrationPlugin,
+)
+from plugin.samples.integration.sample import SampleIntegrationPlugin
+
+# Directory for testing plugins during CI
+PLUGIN_TEST_DIR = '_testfolder/test_plugins'
+
+
+class PluginTagTests(PluginRegistryMixin, TestCase):
+    """Tests for the plugin extras."""
+
+    def setUp(self):
+        """Setup for all tests."""
+        self.sample = SampleIntegrationPlugin()
+        self.plugin_no = NoIntegrationPlugin()
+        self.plugin_wrong = WrongIntegrationPlugin()
+
+    def test_tag_plugin_list(self):
+        """Test that all plugins are listed."""
+        self.assertEqual(plugin_tags.plugin_list(), registry.plugins)
+
+    def test_tag_inactive_plugin_list(self):
+        """Test that all inactive plugins are listed."""
+        self.assertEqual(plugin_tags.inactive_plugin_list(), registry.plugins_inactive)
+
+    def test_tag_plugin_settings(self):
+        """Check all plugins are listed."""
+        self.assertEqual(
+            plugin_tags.plugin_settings(self.sample),
+            registry.mixins_settings.get(self.sample),
+        )
+
+    def test_tag_mixin_enabled(self):
+        """Check that mixin enabled functions work."""
+        key = 'urls'
+        # mixin enabled
+        self.assertEqual(plugin_tags.mixin_enabled(self.sample, key), True)
+        # mixin not enabled
+        self.assertEqual(plugin_tags.mixin_enabled(self.plugin_wrong, key), False)
+        # mixin not existing
+        self.assertEqual(plugin_tags.mixin_enabled(self.plugin_no, key), False)
+
+    def test_mixin_available(self):
+        """Check that mixin_available works."""
+        from plugin import PluginMixinEnum
+
+        self.assertEqual(plugin_tags.mixin_available(PluginMixinEnum.BARCODE), True)
+        self.assertEqual(plugin_tags.mixin_available('wrong'), False)
+
+    def test_tag_safe_url(self):
+        """Test that the safe url tag works expected."""
+        # right url
+        self.assertEqual(
+            plugin_tags.safe_url('api-plugin-install'), '/api/plugins/install/'
+        )
+        # wrong url
+        self.assertEqual(plugin_tags.safe_url('indexas'), None)
+
+
+class InvenTreePluginTests(TestCase):
+    """Tests for InvenTreePlugin."""
+
+    @classmethod
+    def setUpTestData(cls):
+        """Setup for all tests."""
+        super().setUpTestData()
+
+        cls.plugin = InvenTreePlugin()
+
+        class NamedPlugin(InvenTreePlugin):
+            """a named plugin."""
+
+            NAME = 'abc123'
+
+        cls.named_plugin = NamedPlugin()
+
+        class SimpleInvenTreePlugin(InvenTreePlugin):
+            NAME = 'SimplePlugin'
+
+        cls.plugin_simple = SimpleInvenTreePlugin()
+
+        class OldInvenTreePlugin(InvenTreePlugin):
+            PLUGIN_SLUG = 'old'
+
+        cls.plugin_old = OldInvenTreePlugin()
+
+        class NameInvenTreePlugin(InvenTreePlugin):
+            NAME = 'Aplugin'
+            SLUG = 'a'
+            TITLE = 'a title'
+            PUBLISH_DATE = '1111-11-11'
+            AUTHOR = 'AA BB'
+            DESCRIPTION = 'A description'
+            VERSION = '1.2.3a'
+            WEBSITE = 'https://aa.bb/cc'
+            LICENSE = 'MIT'
+
+        cls.plugin_name = NameInvenTreePlugin()
+
+        class VersionInvenTreePlugin(InvenTreePlugin):
+            NAME = 'Version'
+            SLUG = 'testversion'
+
+            MIN_VERSION = '0.1.0'
+            MAX_VERSION = '0.1.3'
+
+        cls.plugin_version = VersionInvenTreePlugin()
+
+    def test_basic_plugin_init(self):
+        """Check if a basic plugin intis."""
+        self.assertEqual(self.plugin.NAME, '')
+        self.assertEqual(self.plugin.plugin_name(), '')
+
+    def test_basic_plugin_name(self):
+        """Check if the name of a basic plugin can be set."""
+        self.assertEqual(self.named_plugin.NAME, 'abc123')
+        self.assertEqual(self.named_plugin.plugin_name(), 'abc123')
+
+    def test_basic_is_active(self):
+        """Check if a basic plugin is active."""
+        self.assertEqual(self.plugin.is_active(), False)
+
+    def test_action_name(self):
+        """Check the name definition possibilities."""
+        # plugin_name
+        self.assertEqual(self.plugin.plugin_name(), '')
+        self.assertEqual(self.plugin_simple.plugin_name(), 'SimplePlugin')
+        self.assertEqual(self.plugin_name.plugin_name(), 'Aplugin')
+
+        # is_sample
+        self.assertEqual(self.plugin.is_sample, False)
+        self.assertEqual(SampleIntegrationPlugin().is_sample, True)
+
+        # slug
+        self.assertEqual(self.plugin.slug, '')
+        self.assertEqual(self.plugin_simple.slug, 'simpleplugin')
+        self.assertEqual(self.plugin_name.slug, 'a')
+
+        # human_name
+        self.assertEqual(self.plugin.human_name, '')
+        self.assertEqual(self.plugin_simple.human_name, 'SimplePlugin')
+        self.assertEqual(self.plugin_name.human_name, 'a title')
+
+        # description
+        self.assertEqual(self.plugin.description, '')
+        self.assertEqual(self.plugin_simple.description, 'SimplePlugin')
+        self.assertEqual(self.plugin_name.description, 'A description')
+
+        # author
+        self.assertEqual(self.plugin_name.author, 'AA BB')
+
+        # pub_date
+        self.assertEqual(self.plugin_name.pub_date, datetime(1111, 11, 11, 0, 0))
+
+        # version
+        self.assertEqual(self.plugin.version, None)
+        self.assertEqual(self.plugin_simple.version, None)
+        self.assertEqual(self.plugin_name.version, '1.2.3a')
+
+        # website
+        self.assertEqual(self.plugin.website, None)
+        self.assertEqual(self.plugin_simple.website, None)
+        self.assertEqual(self.plugin_name.website, 'https://aa.bb/cc')
+
+        # license
+        self.assertEqual(self.plugin.license, None)
+        self.assertEqual(self.plugin_simple.license, None)
+        self.assertEqual(self.plugin_name.license, 'MIT')
+
+    def test_depreciation(self):
+        """Check if depreciations raise as expected."""
+        # check deprecation warning is firing
+        with self.assertWarns(DeprecationWarning):
+            self.assertEqual(self.plugin_old.slug, 'old')
+            # check default value is used
+            self.assertEqual(
+                self.plugin_old.get_meta_value('ABC', 'ABCD', '123'), '123'
+            )
+
+    def test_version(self):
+        """Test Version checks."""
+        self.assertFalse(self.plugin_version.check_version([0, 0, 3]))
+        self.assertTrue(self.plugin_version.check_version([0, 1, 0]))
+        self.assertFalse(self.plugin_version.check_version([0, 1, 4]))
+
+        plug = registry.plugins_full.get('sampleversion')
+        self.assertIsNotNone(plug)
+        if plug:
+            self.assertEqual(plug.is_active(), False)
+
+    def test_plugin_static_file_lookup(self):
+        """Test that the plugin static file lookup works as expected."""
+        from django.contrib.staticfiles.storage import StaticFilesStorage
+        from django.core.files.base import ContentFile
+
+        # Create a sample plugin with a known static file
+        class StaticFilePlugin(InvenTreePlugin):
+            NAME = 'StaticFilePlugin'
+            SLUG = 'static-file-test'
+
+            def get_static_file_url(self, file_name):
+                return self.get_plugin_static_file(file_name)
+
+        plugin = StaticFilePlugin()
+        storage = StaticFilesStorage()
+
+        # A simple test to ensure the path is correctly resolved
+        self.assertEqual(
+            plugin.plugin_static_file(
+                'sample.js', check_exists=False, check_hash=False
+            ),
+            storage.url('plugins/static-file-test/sample.js'),
+        )
+
+        manifest_path = 'plugins/static-file-test/.vite/manifest.json'
+
+        manifest_data = textwrap.dedent("""{
+            "src/sample.js": {
+                "file": "sample.123456.js",
+                "name": "sample",
+                "src": "src/sample.js",
+                "isEntry": true
+            }
+        }""")
+
+        # A more comprehensive test - to find a hashed version of the file
+        # Note: This requires a manifest file to be present - let's create one
+        if not storage.exists(manifest_path):
+            storage.save(manifest_path, content=ContentFile(manifest_data))
+
+        lookup = plugin.plugin_static_file(
+            'sample.js', check_exists=False, check_hash=True
+        )
+
+        self.assertEqual(
+            lookup, storage.url('plugins/static-file-test/sample.123456.js')
+        )
+
+
+class RegistryTests(TestQueryMixin, PluginRegistryMixin, TestCase):
+    """Tests for registry loading methods."""
+
+    def mockDir(self) -> str:
+        """Returns path to mock dir."""
+        return str(Path(__file__).parent.joinpath('mock').absolute())
+
+    def run_package_test(self, directory):
+        """General runner for testing package based installs."""
+        # Patch environment variable to add dir
+        envs = {'INVENTREE_PLUGIN_TEST_DIR': directory}
+        with mock.patch.dict(os.environ, envs):
+            # Reload to rediscover plugins
+            registry.reload_plugins(full_reload=True, collect=True)
+            registry.set_plugin_state('simple', True)
+
+            # Depends on the meta set in InvenTree/plugin/mock/simple:SimplePlugin
+            plg = registry.get_plugin('simple')
+            self.assertEqual(plg.slug, 'simple')
+            self.assertEqual(plg.human_name, 'SimplePlugin')
+
+        # Restore the registry to its normal state. self.plugin_modules was just
+        # collected with INVENTREE_PLUGIN_TEST_DIR pointing at `directory` - without
+        # this, every subsequent reload for the rest of the test run keeps trying to
+        # load 'simple' (and friends) from a directory that may since have been
+        # deleted (see test_folder_loading), silently dropping them from
+        # registry.plugins the next time anything reloads the registry - while their
+        # PluginConfig rows (created/activated above) linger on, since they aren't
+        # tied to this directory at all.
+        registry.reload_plugins(full_reload=True, collect=True)
+
+    def test_custom_loading(self):
+        """Test if data in custom dir is loaded correctly."""
+        test_dir = Path('plugin_test_dir')
+
+        # Patch env
+        envs = {'INVENTREE_PLUGIN_TEST_DIR': 'plugin_test_dir'}
+        with mock.patch.dict(os.environ, envs):
+            # Run plugin directory discovery again
+            registry.plugin_dirs()
+
+            # Check the directory was created
+            self.assertTrue(test_dir.exists())
+
+        # Clean folder up
+        shutil.rmtree(test_dir, ignore_errors=True)
+
+    def test_subfolder_loading(self):
+        """Test that plugins in subfolders get loaded."""
+        self.run_package_test(self.mockDir())
+
+    def test_folder_loading(self):
+        """Test that plugins in folders outside of BASE_DIR get loaded."""
+        # Run in temporary directory -> always a new random name
+        with tempfile.TemporaryDirectory() as tmp:
+            # Fill directory with sample data
+            new_dir = Path(tmp).joinpath('mock')
+            shutil.copytree(self.mockDir(), new_dir)
+
+            # Run tests
+            self.run_package_test(str(new_dir))
+
+    @override_settings(PLUGIN_TESTING_SETUP=True)
+    def test_package_loading(self):
+        """Test that package distributed plugins work."""
+        # Restore the registry to its normal state once this test finishes -
+        # otherwise self.plugin_modules keeps trying to load 'zapier' from entry
+        # points for the rest of the test run, well after PLUGIN_TESTING_SETUP
+        # has reverted to False, silently dropping it from registry.plugins the
+        # next time anything reloads the registry - while its PluginConfig row
+        # lingers on (see run_package_test for the same pattern).
+        self.addCleanup(registry.reload_plugins, full_reload=True, collect=True)
+
+        # Install sample package
+        subprocess.check_output(['pip', 'install', 'inventree-zapier'])
+
+        # Reload to discover plugin
+        registry.reload_plugins(full_reload=True, collect=True)
+
+        # Test that plugin was installed
+        plg = registry.get_plugin('zapier', active=None)
+        self.assertEqual(plg.slug, 'zapier')
+        self.assertEqual(plg.name, 'inventree_zapier')
+
+    def test_broken_samples(self):
+        """Test that the broken samples trigger reloads."""
+        # Reset the registry to a known state
+        registry.errors = {}
+
+        # In the base setup there are no errors
+        self.assertEqual(len(registry.errors), 0)
+
+        # Reload the registry with the broken samples dir
+        brokenDir = str(Path(__file__).parent.joinpath('broken').absolute())
+        with mock.patch.dict(os.environ, {'INVENTREE_PLUGIN_TEST_DIR': brokenDir}):
+            # Reload to rediscover plugins
+            registry.reload_plugins(full_reload=True, collect=True)
+
+        # Restore the registry to its normal state - otherwise self.plugin_modules
+        # keeps the (permanently broken) plugins from brokenDir for the rest of the
+        # test run, and every subsequent reload re-attempts (and fails) to load them.
+        registry.reload_plugins(full_reload=True, collect=True)
+
+        self.assertEqual(len(registry.errors), 3)
+
+        errors = registry.errors
+
+        def find_error(group: str, key: str) -> str:
+            """Find a matching error in the registry errors."""
+            for error in errors.get(group, []):
+                if key in error:
+                    return error[key]
+            return None
+
+        # Check for expected errors in the registry
+        self.assertIn(
+            "Plugin 'BadActorPlugin' cannot override final method 'plugin_slug'",
+            find_error('discovery', 'bad_actor'),
+        )
+
+        self.assertIn(
+            "name 'bb' is not defined", find_error('discovery', 'broken_file')
+        )
+
+        self.assertIn(
+            'This is a dummy error', find_error('Test:init_plugin', 'broken_sample')
+        )
+
+    def test_init_plugin_missing_config(self):
+        """Test that _init_plugin does not crash if PluginConfig cannot be looked up.
+
+        get_plugin_config() can legitimately return None - e.g. if the database
+        is not ready, or PluginConfig creation is disallowed in the current
+        context - leaving plugin.db as None. _init_plugin must still be able to
+        mark such a plugin as inactive without raising
+        AttributeError: 'NoneType' object has no attribute 'active'.
+        """
+
+        class MissingConfigPlugin(InvenTreePlugin):
+            NAME = 'MissingConfigPlugin'
+            SLUG = 'missingconfigplugin'
+
+        self.addCleanup(registry.reload_plugins, full_reload=True, collect=True)
+
+        # PLUGIN_TESTING=True would force-load the plugin regardless of its
+        # (missing) PluginConfig - disable it to hit the 'inactive' path below
+        with override_settings(PLUGIN_TESTING=False):
+            with mock.patch.object(registry, 'get_plugin_config', return_value=None):
+                registry._init_plugin(MissingConfigPlugin, {})
+
+        self.assertIn('missingconfigplugin', registry.plugins_full)
+        self.assertNotIn('missingconfigplugin', registry.plugins)
+
+    def test_init_plugin_missing_config_mandatory(self):
+        """Test that a mandatory plugin with no PluginConfig does not error out.
+
+        Same underlying gap as test_init_plugin_missing_config, but hit via the
+        'ensure mandatory plugin is active' branch instead of the 'deactivate'
+        branch - both dereferenced plg_db.active without checking plg_db was
+        actually found.
+        """
+
+        class MissingConfigMandatoryPlugin(InvenTreePlugin):
+            NAME = 'MissingConfigMandatoryPlugin'
+            SLUG = 'missingconfigmandatoryplugin'
+
+        self.addCleanup(registry.reload_plugins, full_reload=True, collect=True)
+        registry.errors.pop('MissingConfigMandatoryPlugin:init_plugin', None)
+
+        with override_settings(PLUGINS_MANDATORY=['missingconfigmandatoryplugin']):
+            with mock.patch.object(registry, 'get_plugin_config', return_value=None):
+                registry._init_plugin(MissingConfigMandatoryPlugin, {})
+
+        # No spurious 'plugin failed to load' error should have been recorded
+        self.assertNotIn('MissingConfigMandatoryPlugin:init_plugin', registry.errors)
+        self.assertIn('missingconfigmandatoryplugin', registry.plugins_full)
+
+    def test_plugin_override_mandatory(self):
+        """Test that a plugin cannot override the is_mandatory method."""
+        with self.assertRaises(TypeError) as e:
+            # Attempt to create a class which overrides the 'is_mandatory' method
+            class MyDummyPlugin(InvenTreePlugin):
+                """A dummy plugin for testing."""
+
+                NAME = 'MyDummyPlugin'
+                SLUG = 'mydummyplugin'
+                TITLE = 'My Dummy Plugin'
+                VERSION = '1.0.0'
+
+                def is_mandatory(self):
+                    """Override is_mandatory to always return True."""
+                    return True
+
+        # Check that the error message is as expected
+        self.assertIn(
+            "Plugin 'MyDummyPlugin' cannot override final method 'is_mandatory' from InvenTreePlugin",
+            str(e.exception),
+        )
+
+    def test_plugin_override_active(self):
+        """Test that the plugin override works as expected."""
+        with self.assertRaises(TypeError) as e:
+            # Attempt to create a class which overrides the 'is_active' method
+            class MyDummyPlugin(InvenTreePlugin):
+                """A dummy plugin for testing."""
+
+                NAME = 'MyDummyPlugin'
+                SLUG = 'mydummyplugin'
+                TITLE = 'My Dummy Plugin'
+                VERSION = '1.0.0'
+
+                def is_active(self):
+                    """Override is_active to always return True."""
+                    return True
+
+                def __init_subclass__(cls):
+                    """Override __init_subclass__."""
+                    # Ensure that overriding the __init_subclass__ method
+                    # does not prevent the TypeError from being raised
+
+        # Check that the error message is as expected
+        self.assertIn(
+            "Plugin 'MyDummyPlugin' cannot override final method 'is_active' from InvenTreePlugin",
+            str(e.exception),
+        )
+
+    @override_settings(PLUGIN_TESTING=True, PLUGIN_TESTING_SETUP=True)
+    @patch.dict(os.environ, {'INVENTREE_PLUGIN_TEST_DIR': PLUGIN_TEST_DIR})
+    def test_registry_reload(self):
+        """Test that the registry correctly reloads plugin modules.
+
+        - Create a simple plugin which we can change the version
+        - Ensure that the "hash" of the plugin registry changes
+        """
+        dummy_file = os.path.join(PLUGIN_TEST_DIR, 'dummy_ci_plugin.py')
+
+        # Ensure the plugin dir exists
+        os.makedirs(PLUGIN_TEST_DIR, exist_ok=True)
+
+        # Create an __init__.py file
+        init_file = os.path.join(PLUGIN_TEST_DIR, '__init__.py')
+        if not os.path.exists(init_file):
+            with open(os.path.join(init_file), 'w', encoding='utf-8') as f:
+                f.write('')
+
+        def plugin_content(version):
+            """Return the content of the plugin file."""
+            content = f"""
+            from plugin import InvenTreePlugin
+
+            PLG_VERSION = "{version}"
+
+            print(">>> LOADING DUMMY PLUGIN v" + PLG_VERSION + " <<<")
+
+            class DummyCIPlugin(InvenTreePlugin):
+
+                NAME = "DummyCIPlugin"
+                SLUG = "dummyci"
+                TITLE = "Dummy plugin for CI testing"
+
+                VERSION = PLG_VERSION
+
+            """
+
+            return textwrap.dedent(content)
+
+        def create_plugin_file(
+            version: str, enabled: bool = True, reload: bool = True
+        ) -> Optional[str]:
+            """Create a plugin file with the given version.
+
+            Arguments:
+                version: The version string to use for the plugin file
+                enabled: Whether the plugin should be enabled or not
+                reload: Whether to reload the plugin registry after creating the file
+
+            Returns:
+                str: The plugin registry hash
+            """
+            import time
+
+            content = plugin_content(version)
+
+            with open(dummy_file, 'w', encoding='utf-8') as f:
+                f.write(content)
+
+            # Wait for the file to be written
+            time.sleep(2)
+
+            if reload:
+                # Ensure the plugin is activated
+                registry.set_plugin_state('dummyci', enabled)
+                registry.reload_plugins(
+                    full_reload=True, collect=True, force_reload=True
+                )
+
+            registry.update_plugin_hash()
+
+            return registry.registry_hash
+
+        # Initial hash, with plugin disabled
+        hash_disabled = create_plugin_file('0.0.1', enabled=False, reload=False)
+
+        # Perform initial registry reload
+        registry.reload_plugins(full_reload=True, collect=True, force_reload=True)
+
+        # Start plugin in known state
+        registry.set_plugin_state('dummyci', False)
+
+        hash_disabled = create_plugin_file('0.0.1', enabled=False)
+
+        # Enable the plugin
+        hash_enabled = create_plugin_file('0.1.0', enabled=True)
+
+        # Hash must be different!
+        self.assertNotEqual(hash_disabled, hash_enabled)
+
+        plugin_hash = hash_enabled
+
+        for v in ['0.1.1', '7.1.2', '1.2.1', '4.0.1']:
+            h = create_plugin_file(v, enabled=True)
+            self.assertNotEqual(plugin_hash, h)
+            plugin_hash = h
+
+        # Revert back to original 'version'
+        h = create_plugin_file('0.1.0', enabled=True)
+        self.assertEqual(hash_enabled, h)
+
+        # Disable the plugin
+        h = create_plugin_file('0.0.1', enabled=False)
+        self.assertEqual(hash_disabled, h)
+
+        # Finally, ensure that the plugin file is removed after testing
+        os.remove(dummy_file)
+
+    def test_check_reload(self):
+        """Test that check_reload works as expected."""
+        # Check that the registry is not reloaded
+        self.assertFalse(registry.check_reload())
+
+        with self.settings(TESTING=False, PLUGIN_TESTING_RELOAD=True):
+            # Check that the registry is reloaded
+            registry.reload_plugins(full_reload=True, collect=True, force_reload=True)
+            self.assertFalse(registry.check_reload())
+
+            # Check that changed hashes run through
+            registry.registry_hash = 'abc'
+            self.assertTrue(registry.check_reload())
+
+    def test_registry_hash_order_independence(self):
+        """Test that the registry hash does not depend on plugin iteration order.
+
+        Different processes (gunicorn workers, background worker, shell) can
+        discover the same set of plugins in a different order. If the hash
+        depends on iteration order, processes disagree about the hash for the
+        same registry state, and ping-pong each other into endless reloads
+        via check_reload.
+        """
+        original_plugins = registry.plugins
+
+        # Reversing a dict with fewer than 2 entries would not change anything
+        self.assertGreater(len(original_plugins), 1)
+
+        try:
+            hash_original = registry.calculate_plugin_hash()
+
+            # Simulate a process which discovered the same plugins in reverse order
+            registry.plugins = dict(reversed(list(original_plugins.items())))
+
+            self.assertEqual(hash_original, registry.calculate_plugin_hash())
+        finally:
+            registry.plugins = original_plugins
+
+    def test_lease_survives_database_not_ready(self):
+        """Test that the lease functions degrade gracefully if the database is not ready."""
+        from django.db.utils import ProgrammingError
+
+        from common.models import InvenTreeSetting
+        from plugin.lease import release_lease, try_acquire_lease
+
+        with mock.patch.object(
+            InvenTreeSetting.objects,
+            'get_or_create',
+            side_effect=ProgrammingError('relation does not exist'),
+        ):
+            self.assertFalse(try_acquire_lease('_test_lease_db_not_ready'))
+
+        with mock.patch.object(
+            InvenTreeSetting.objects,
+            'select_for_update',
+            side_effect=ProgrammingError('relation does not exist'),
+        ):
+            # Must not raise
+            release_lease('_test_lease_db_not_ready')
+
+    def test_lease_acquire_release(self):
+        """Test that try_acquire_lease / release_lease provide mutual exclusion."""
+        from plugin.lease import release_lease, try_acquire_lease
+
+        key = '_test_lease_acquire_release'
+
+        # First attempt succeeds
+        self.assertTrue(try_acquire_lease(key))
+
+        # A second attempt while the lease is held must fail
+        self.assertFalse(try_acquire_lease(key))
+
+        # Once released, it can be acquired again
+        release_lease(key)
+        self.assertTrue(try_acquire_lease(key))
+
+        release_lease(key)
+
+    def test_lease_expires_after_grace_period(self):
+        """Test that an abandoned lease (e.g. a crashed holder) can be reclaimed."""
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        from common.settings import set_global_setting
+        from plugin.lease import CLAIM_LEASE, release_lease, try_acquire_lease
+
+        key = '_test_lease_expiry'
+
+        self.assertTrue(try_acquire_lease(key))
+
+        # A fresh claim cannot be immediately re-acquired by someone else
+        self.assertFalse(try_acquire_lease(key))
+
+        # Simulate a crash: back-date the claim beyond the grace period
+        stale_claim = timezone.now() - CLAIM_LEASE - timedelta(seconds=1)
+        set_global_setting(f'{key}_CLAIMED_AT', stale_claim.isoformat())
+
+        # The stale claim is now treated as abandoned, and can be re-acquired
+        self.assertTrue(try_acquire_lease(key))
+
+        release_lease(key)
+
+    def test_acquire_lease_blocking_times_out(self):
+        """Test that acquire_lease_blocking gives up after its timeout, rather than hanging."""
+        import time
+
+        from plugin.lease import (
+            acquire_lease_blocking,
+            release_lease,
+            try_acquire_lease,
+        )
+
+        key = '_test_lease_blocking_timeout'
+
+        self.assertTrue(try_acquire_lease(key))
+
+        start = time.monotonic()
+        acquired = acquire_lease_blocking(key, timeout=0.3, poll_interval=0.05)
+        elapsed = time.monotonic() - start
+
+        self.assertFalse(acquired)
+        self.assertGreaterEqual(elapsed, 0.3)
+        self.assertLess(elapsed, 5)
+
+        release_lease(key)
+
+        # Once free, a blocking acquire succeeds without waiting for the timeout
+        self.assertTrue(acquire_lease_blocking(key, timeout=0.3, poll_interval=0.05))
+        release_lease(key)
+
+    def test_install_plugin_file_persists_hash_only_after_success(self):
+        """Test that install_plugin_file() only persists the hash once installed.
+
+        Regression test for a bug found in PR review (inventree/InvenTree#12776):
+        the hash must not be visible as "up to date" until the install has actually
+        finished. Otherwise a process killed outright (not a Python exception - an
+        OOM kill, a container stopped mid-install) between claiming the lease and
+        finishing would leave the hash pointing at content that was never
+        installed, and no future check would ever retry it.
+        """
+        from common.settings import get_global_setting
+        from plugin.registry import registry
+
+        hash_during_install = 'unset'
+
+        def fake_install_plugins_file():
+            """Read the persisted hash *while the install is still in progress*.
+
+            This is exactly what a hard kill at this instant would leave behind.
+            """
+            nonlocal hash_during_install
+            hash_during_install = get_global_setting(
+                '_PLUGIN_FILE_HASH', '', create=False, cache=False
+            )
+            return True
+
+        with (
+            tempfile.TemporaryDirectory() as tmpdir,
+            mock.patch('plugin.installer._env_plugin_hash_cache', None),
+            mock.patch(
+                'plugin.installer.plugin_env_marker_path',
+                return_value=Path(tmpdir) / '.inventree_plugins_hash',
+            ),
+            mock.patch(
+                'plugin.installer.plugins_file_hash', return_value='test-hash-1'
+            ),
+            mock.patch(
+                'plugin.installer.install_plugins_file',
+                side_effect=fake_install_plugins_file,
+            ),
+        ):
+            registry.install_plugin_file()
+
+        # While the install was in progress, the hash must not yet reflect the
+        # new (not-yet-installed) value
+        self.assertEqual(hash_during_install, '')
+
+        # After a successful install, the hash is updated
+        self.assertEqual(
+            get_global_setting('_PLUGIN_FILE_HASH', '', create=False), 'test-hash-1'
+        )
+
+    def test_install_plugin_file_failure_does_not_persist_hash(self):
+        """Test that a failed install leaves the hash unset, so it is retried next time."""
+        from common.settings import get_global_setting, set_global_setting
+        from plugin.registry import registry
+
+        set_global_setting('_PLUGIN_FILE_HASH', '')
+
+        with (
+            tempfile.TemporaryDirectory() as tmpdir,
+            mock.patch('plugin.installer._env_plugin_hash_cache', None),
+            mock.patch(
+                'plugin.installer.plugin_env_marker_path',
+                return_value=Path(tmpdir) / '.inventree_plugins_hash',
+            ),
+            mock.patch(
+                'plugin.installer.plugins_file_hash', return_value='test-hash-2'
+            ),
+            mock.patch('plugin.installer.install_plugins_file', return_value=False),
+        ):
+            registry.install_plugin_file()
+
+        self.assertEqual(get_global_setting('_PLUGIN_FILE_HASH', '', create=False), '')
+
+    def test_install_plugin_file_skips_if_already_current(self):
+        """Test that install_plugin_file() is a no-op once the hash already matches."""
+        from plugin.registry import registry
+
+        with (
+            tempfile.TemporaryDirectory() as tmpdir,
+            mock.patch('plugin.installer._env_plugin_hash_cache', None),
+            mock.patch(
+                'plugin.installer.plugin_env_marker_path',
+                return_value=Path(tmpdir) / '.inventree_plugins_hash',
+            ),
+            mock.patch(
+                'plugin.installer.plugins_file_hash', return_value='test-hash-3'
+            ),
+            mock.patch(
+                'plugin.installer.install_plugins_file', return_value=True
+            ) as mock_install,
+        ):
+            registry.install_plugin_file()
+            mock_install.assert_called_once()
+
+            # A second call with the same (already-installed) hash must not
+            # install again
+            registry.install_plugin_file()
+            mock_install.assert_called_once()
+
+    def test_install_plugin_file_reinstalls_in_fresh_environment(self):
+        """Test that a matching database hash alone does not skip installation.
+
+        Regression test for inventree/InvenTree#12848: a fresh python
+        environment (e.g. a container replaced without a persistent venv
+        volume) must reinstall even though the database still remembers a
+        previous environment's successful install of the exact same file.
+        """
+        from common.settings import set_global_setting
+        from plugin.registry import registry
+
+        # Simulate a database that already believes this hash is installed -
+        # as if a *previous* (now-replaced) environment installed it
+        set_global_setting('_PLUGIN_FILE_HASH', 'test-hash-4')
+
+        with (
+            tempfile.TemporaryDirectory() as tmpdir,
+            mock.patch('plugin.installer._env_plugin_hash_cache', None),
+            mock.patch(
+                'plugin.installer.plugin_env_marker_path',
+                # A fresh environment has no marker file at all
+                return_value=Path(tmpdir) / '.inventree_plugins_hash',
+            ),
+            mock.patch(
+                'plugin.installer.plugins_file_hash', return_value='test-hash-4'
+            ),
+            mock.patch(
+                'plugin.installer.install_plugins_file', return_value=True
+            ) as mock_install,
+        ):
+            registry.install_plugin_file()
+            mock_install.assert_called_once()
+
+            # Now that this environment has recorded the install, a second
+            # call is correctly skipped
+            registry.install_plugin_file()
+            mock_install.assert_called_once()
+
+    def test_install_plugin_file_falls_back_to_process_cache_when_marker_unwritable(
+        self,
+    ):
+        """Test that a non-writable marker location still settles within one process.
+
+        If sys.prefix is not writable (e.g. a read-only root filesystem),
+        set_env_plugin_hash() cannot persist the marker file to disk. Without
+        an in-process fallback, get_env_plugin_hash() would then return None
+        forever, and install_plugin_file() would re-attempt `pip install` on
+        every single call within the same process - not just once per
+        process start.
+        """
+        from common.settings import set_global_setting
+        from plugin.registry import registry
+
+        set_global_setting('_PLUGIN_FILE_HASH', '')
+
+        marker = mock.MagicMock()
+        marker.exists.return_value = False
+        marker.write_text.side_effect = OSError('Read-only file system')
+
+        with (
+            mock.patch('plugin.installer._env_plugin_hash_cache', None),
+            mock.patch('plugin.installer.plugin_env_marker_path', return_value=marker),
+            mock.patch(
+                'plugin.installer.plugins_file_hash', return_value='test-hash-5'
+            ),
+            mock.patch(
+                'plugin.installer.install_plugins_file', return_value=True
+            ) as mock_install,
+        ):
+            registry.install_plugin_file()
+            mock_install.assert_called_once()
+
+            # The marker file could not be written, but the in-memory cache
+            # still settles this process - a second call must not reinstall
+            registry.install_plugin_file()
+            mock_install.assert_called_once()
+
+    def test_builtin_mandatory_plugins(self):
+        """Test that mandatory builtin plugins are always loaded."""
+        from plugin.models import PluginConfig
+        from plugin.registry import registry
+
+        # Start with a 'clean slate'
+        PluginConfig.objects.all().delete()
+
+        # Change this value whenever a new mandatory plugin is added
+        N_MANDATORY_PLUGINS = 11
+
+        registry.reload_plugins(full_reload=True, collect=True)
+        mandatory = registry.MANDATORY_PLUGINS
+        self.assertEqual(len(mandatory), N_MANDATORY_PLUGINS)
+
+        # Check that the mandatory plugins are loaded
+        self.assertEqual(
+            PluginConfig.objects.filter(active=True).count(), len(mandatory)
+        )
+
+        for key in mandatory:
+            cfg = registry.get_plugin_config(key)
+            self.assertIsNotNone(cfg, f"Mandatory plugin '{key}' not found in config")
+            self.assertTrue(cfg.is_mandatory())
+            self.assertTrue(cfg.active, f"Mandatory plugin '{key}' is not active")
+            self.assertTrue(cfg.is_active())
+            self.assertTrue(cfg.is_builtin())
+            plg = registry.get_plugin(key)
+            self.assertIsNotNone(plg, f"Mandatory plugin '{key}' not found")
+            self.assertTrue(
+                plg.is_mandatory, f"Plugin '{key}' is not marked as mandatory"
+            )
+
+        slug = 'bom-exporter'
+        self.assertIn(slug, mandatory)
+        cfg = registry.get_plugin_config(slug)
+
+        # Try to disable the mandatory plugin
+        cfg.active = False
+        cfg.save()
+        cfg.refresh_from_db()
+
+        # Mandatory plugin cannot be disabled!
+        self.assertTrue(cfg.active)
+        self.assertTrue(cfg.is_active())
+
+    def test_mandatory_plugins(self):
+        """Test that plugins marked as 'mandatory' are always active."""
+        from plugin.models import PluginConfig
+        from plugin.registry import registry
+
+        # Start with a 'clean slate'
+        PluginConfig.objects.all().delete()
+
+        self.assertEqual(PluginConfig.objects.count(), 0)
+
+        registry.reload_plugins(full_reload=True, collect=True)
+
+        N_CONFIG = PluginConfig.objects.count()
+        N_ACTIVE = PluginConfig.objects.filter(active=True).count()
+
+        # Run checks across the registered plugin configurations
+        self.assertGreater(N_CONFIG, 0, 'No plugin configs found after reload')
+        self.assertGreater(N_ACTIVE, 0, 'No active plugin configs found after reload')
+        self.assertLess(
+            N_ACTIVE, N_CONFIG, 'All plugins are installed, but only some are active'
+        )
+        self.assertEqual(
+            N_ACTIVE,
+            len(registry.MANDATORY_PLUGINS),
+            'Not all mandatory plugins are active',
+        )
+
+        # Next, mark some additional plugins as mandatory
+        # These are a mix of "builtin" and "sample" plugins
+        mandatory_slugs = ['sampleui', 'validator', 'digikeyplugin', 'autocreatebuilds']
+
+        with self.settings(PLUGINS_MANDATORY=mandatory_slugs):
+            # Reload the plugins to apply the mandatory settings
+            registry.reload_plugins(full_reload=True, collect=True)
+
+            self.assertEqual(N_CONFIG, PluginConfig.objects.count())
+            self.assertEqual(
+                N_ACTIVE + 4, PluginConfig.objects.filter(active=True).count()
+            )
+
+            # Check that the mandatory plugins are active
+            for slug in mandatory_slugs:
+                cfg = registry.get_plugin_config(slug)
+                self.assertIsNotNone(
+                    cfg, f"Mandatory plugin '{slug}' not found in config"
+                )
+                self.assertTrue(cfg.is_mandatory())
+                self.assertTrue(cfg.active, f"Mandatory plugin '{slug}' is not active")
+                self.assertTrue(cfg.is_active())
+                plg = registry.get_plugin(slug)
+                self.assertTrue(plg.is_active(), f"Plugin '{slug}' is not active")
+                self.assertIsNotNone(plg, f"Mandatory plugin '{slug}' not found")
+                self.assertTrue(
+                    plg.is_mandatory, f"Plugin '{slug}' is not marked as mandatory"
+                )
+
+    def test_with_mixin(self):
+        """Tests for the 'with_mixin' registry method."""
+        from plugin.models import PluginConfig
+        from plugin.registry import registry
+
+        self.ensurePluginsLoaded()
+
+        N_CONFIG = PluginConfig.objects.count()
+        self.assertGreater(N_CONFIG, 0, 'No plugin configs found')
+
+        # Test that the 'with_mixin' method is query efficient
+        for mixin in PluginMixinEnum:
+            with self.assertNumQueriesLessThan(3):
+                registry.with_mixin(mixin)
+
+        # Test for the 'base' mixin - we expect that this returns "all" plugins
+        base = registry.with_mixin(PluginMixinEnum.BASE, active=None, builtin=None)
+
+        if len(base) != N_CONFIG:
+            # INSTRUMENTATION (temporary): pinpoint exactly which plugin(s) cause the
+            # mismatch, and whether it's a missing registry entry, a missing
+            # PluginConfig, or a loaded plugin that fails the mixin check.
+            db_keys = set(PluginConfig.objects.values_list('key', flat=True))
+            registry_keys = set(registry.plugins.keys())
+            matched_keys = {p.slug for p in base}
+
+            print(f'INSTRUMENTATION N_CONFIG={N_CONFIG} len(base)={len(base)}')
+            print(f'INSTRUMENTATION db_keys ({len(db_keys)}) = {sorted(db_keys)}')
+            print(
+                f'INSTRUMENTATION registry_keys ({len(registry_keys)}) = {sorted(registry_keys)}'
+            )
+            print(
+                f'INSTRUMENTATION matched_keys ({len(matched_keys)}) = {sorted(matched_keys)}'
+            )
+            print(
+                'INSTRUMENTATION db_keys - registry_keys (config exists, plugin not loaded) = '
+                f'{sorted(db_keys - registry_keys)}'
+            )
+            print(
+                'INSTRUMENTATION registry_keys - db_keys (plugin loaded, no config) = '
+                f'{sorted(registry_keys - db_keys)}'
+            )
+
+            loaded_but_unmatched = (db_keys & registry_keys) - matched_keys
+            print(
+                'INSTRUMENTATION loaded_but_unmatched (config + registry entry exist, '
+                f'excluded from base) = {sorted(loaded_but_unmatched)}'
+            )
+
+            for slug in loaded_but_unmatched:
+                plugin = registry.plugins.get(slug)
+                cfg = registry.get_plugin_config(slug)
+                try:
+                    mixin_result = f'mixin_enabled(base)={plugin.mixin_enabled("base")}'
+                except Exception as exc:
+                    mixin_result = f'mixin_enabled(base) raised {exc!r}'
+                print(
+                    f'INSTRUMENTATION slug={slug!r} plugin_class={type(plugin)!r} '
+                    f'is_package={getattr(plugin, "is_package", None)!r} '
+                    f'package_name={getattr(plugin, "package_name", None)!r} '
+                    f'cfg_active={cfg.active if cfg else None!r} '
+                    f'cfg_builtin={cfg.is_builtin() if cfg else None!r} '
+                    f'{mixin_result}'
+                )
+
+            print(f'INSTRUMENTATION registry.errors = {dict(registry.errors)!r}')
+
+        self.assertEqual(len(base), N_CONFIG, 'Base mixin does not return all plugins')
+
+        # Next, fetch only "active" plugins
+        n_active = len(registry.with_mixin(PluginMixinEnum.BASE, active=True))
+        self.assertGreater(n_active, 0, 'No active plugins found with base mixin')
+        self.assertLess(n_active, N_CONFIG, 'All plugins are active with base mixin')
+
+        n_inactive = len(registry.with_mixin(PluginMixinEnum.BASE, active=False))
+
+        self.assertGreater(n_inactive, 0, 'No inactive plugins found with base mixin')
+        self.assertLess(n_inactive, N_CONFIG, 'All plugins are active with base mixin')
+        self.assertEqual(
+            n_active + n_inactive, N_CONFIG, 'Active and inactive plugins do not match'
+        )
+
+        # Filter by 'builtin' status
+        plugins = registry.with_mixin(PluginMixinEnum.LABELS, builtin=True, active=True)
+        self.assertEqual(len(plugins), 2)
+
+        keys = [p.slug for p in plugins]
+        self.assertIn('inventreelabel', keys)
+        self.assertIn('inventreelabelmachine', keys)
+
+    def test_config_attributes(self):
+        """Test attributes for PluginConfig objects."""
+        self.ensurePluginsLoaded()
+
+        cfg = registry.get_plugin_config('bom-exporter')
+        self.assertIsNotNone(cfg, 'PluginConfig for bom-exporter not found')
+
+        self.assertTrue(cfg.is_mandatory())
+        self.assertTrue(cfg.is_active())
+        self.assertTrue(cfg.is_builtin())
+        self.assertFalse(cfg.is_package())
+        self.assertFalse(cfg.is_sample())
+
+
+class InstallerTests(TestCase):
+    """Tests for the plugin installer code."""
+
+    def test_plugin_install_errors(self):
+        """Test error handling for plugin installation."""
+        # No data provided
+        with self.assertRaises(ValidationError) as e:
+            install_plugin()
+
+        self.assertIn(
+            'No package name or URL provided for installation', str(e.exception)
+        )
+
+        # Invalid package name
+        for pkg in [
+            'invalid;name',
+            'invalid&name',
+            'invalid|name',
+            'invalid`name',
+            'invalid$(name)',
+        ]:
+            with self.assertRaises(ValidationError) as e:
+                install_plugin(packagename=pkg)
+
+            self.assertIn('Invalid characters in package name or URL', str(e.exception))
+
+        # Non superuser account
+        user = User.objects.create(username='my-user', is_superuser=False)
+
+        with self.assertRaises(ValidationError) as e:
+            install_plugin(user=user, packagename='some-package')
+
+        self.assertIn(
+            'Only superuser accounts can administer plugins', str(e.exception)
+        )
+
+    def test_update_plugins_file_no_duplicates(self):
+        """Test that update_plugins_file() does not duplicate existing entries."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pf = Path(tmpdir) / 'plugins.txt'
+            pf.write_text('')
+
+            with override_settings(PLUGIN_FILE=pf):
+                # Installing the same bare package name multiple times must
+                # only ever result in a single line for that package
+                for _ in range(3):
+                    update_plugins_file('inventree-brother-plugin')
+
+                lines = [line for line in pf.read_text().splitlines() if line.strip()]
+                self.assertEqual(lines, ['inventree-brother-plugin'])
+
+                # Removing the plugin removes its (bare) line
+                update_plugins_file('inventree-brother-plugin', remove=True)
+
+                lines = [line for line in pf.read_text().splitlines() if line.strip()]
+                self.assertEqual(lines, [])
+
+                # The same must hold for a version-pinned reference: repeat
+                # installs of the exact same reference must not duplicate it
+                for _ in range(3):
+                    update_plugins_file('inventree-brother-plugin==1.2.3')
+
+                lines = [line for line in pf.read_text().splitlines() if line.strip()]
+                self.assertEqual(lines, ['inventree-brother-plugin==1.2.3'])
+
+                # Removing the plugin removes its (version-pinned) line
+                update_plugins_file('inventree-brother-plugin==1.2.3', remove=True)
+
+                lines = [line for line in pf.read_text().splitlines() if line.strip()]
+                self.assertEqual(lines, [])
+
+    def test_update_plugins_file_regex_metacharacters(self):
+        """Test that package names containing regex metacharacters are handled safely.
+
+        Package/version specifiers may legitimately contain characters such
+        as '.', '+', '[' and ']' (e.g. extras, local version identifiers).
+        These must be treated literally, not as regex syntax.
+        """
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pf = Path(tmpdir) / 'plugins.txt'
+            pf.write_text('some-other-package==1.0.0\n')
+
+            with override_settings(PLUGIN_FILE=pf):
+                # A package name containing an extras specifier must not raise
+                # (unbalanced/undesired regex syntax) and must not spuriously
+                # match an unrelated existing line
+                update_plugins_file('inventree-plugin[extra]==1.0.0')
+
+                lines = [line for line in pf.read_text().splitlines() if line.strip()]
+                self.assertEqual(
+                    lines,
+                    ['some-other-package==1.0.0', 'inventree-plugin[extra]==1.0.0'],
+                )
+
+                # Re-adding the same reference must not duplicate it
+                update_plugins_file('inventree-plugin[extra]==1.0.0')
+
+                lines = [line for line in pf.read_text().splitlines() if line.strip()]
+                self.assertEqual(
+                    lines,
+                    ['some-other-package==1.0.0', 'inventree-plugin[extra]==1.0.0'],
+                )

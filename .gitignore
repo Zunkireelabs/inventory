@@ -1,0 +1,28 @@
+# Secrets / local config
+.env
+.env.*
+!.env.example
+inventree-src/.env
+
+# InvenTree data volumes
+inventree-data/
+inventree-src/inventree-data/
+inventree-src/config/secret_key.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+inventree-src/.venv/
+
+# Node
+node_modules/
+inventree-src/src/frontend/node_modules/
+inventree-src/src/frontend/dist/
+
+# OS
+.DS_Store
+
+# Scratch
+temp-ss/
