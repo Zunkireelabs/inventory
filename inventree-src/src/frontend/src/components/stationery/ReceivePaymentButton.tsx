@@ -8,6 +8,7 @@ import {
   Stack,
   TextInput
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconAlertCircle, IconCash } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -31,6 +32,7 @@ const METHOD_OPTIONS = [
  * existing endpoint.
  */
 export default function ReceivePaymentButton() {
+  const isMobile = useMediaQuery('(max-width: 48em)');
   const [opened, setOpened] = useState(false);
   const [customerId, setCustomerId] = useState<number | null>(null);
   const [invoiceId, setInvoiceId] = useState<number | null>(null);
@@ -106,6 +108,7 @@ export default function ReceivePaymentButton() {
         }}
         title={t`Receive Payment`}
         centered
+        fullScreen={isMobile}
       >
         <Stack>
           {errorDetail && (

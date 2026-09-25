@@ -6,12 +6,14 @@ import {
   Group,
   Modal,
   NumberInput,
+  SimpleGrid,
   Stack,
   Text,
   Textarea,
   ThemeIcon
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
+import { useMediaQuery } from '@mantine/hooks';
 import {
   IconAlertCircle,
   IconCash,
@@ -93,6 +95,7 @@ export default function RecordSaleButton({
   onSuccess
 }: Readonly<{ onSuccess?: () => void }>) {
   const navigate = useNavigate();
+  const isMobile = useMediaQuery('(max-width: 48em)');
   const [opened, setOpened] = useState(false);
   const [saleType, setSaleType] = useState<SaleType>('b2c_cash');
   const [form, setForm] = useState(INITIAL_FORM);
@@ -198,6 +201,7 @@ export default function RecordSaleButton({
         title={t`New Sale`}
         size='lg'
         centered
+        fullScreen={isMobile}
       >
         {success ? (
           <Stack align='center' py='md'>
@@ -247,7 +251,7 @@ export default function RecordSaleButton({
           </Stack>
         ) : (
           <Stack>
-            <Group gap='xs' grow>
+            <SimpleGrid cols={{ base: 2, sm: 4 }} spacing='xs'>
               {TYPE_OPTIONS.map((opt) => (
                 <TransactionTypeCard
                   key={opt.value}
@@ -258,7 +262,7 @@ export default function RecordSaleButton({
                   onClick={() => setSaleType(opt.value)}
                 />
               ))}
-            </Group>
+            </SimpleGrid>
 
             <Divider />
 
@@ -283,7 +287,7 @@ export default function RecordSaleButton({
             />
             <StockAvailabilityHint quantity={form.stockQty} />
 
-            <Group grow>
+            <SimpleGrid cols={{ base: 1, xs: 2 }}>
               <NumberInput
                 label={t`Quantity`}
                 value={form.quantity}
@@ -300,7 +304,7 @@ export default function RecordSaleButton({
                 required
                 description={isGift ? t`Required for gifts` : undefined}
               />
-            </Group>
+            </SimpleGrid>
 
             {isB2B && (
               <DateInput

@@ -1,5 +1,6 @@
 import { t } from '@lingui/core/macro';
 import { Alert, Button, Modal, NumberInput, Stack, Textarea } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconAlertCircle, IconPackageImport } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
@@ -15,6 +16,7 @@ import { ProductPicker, StockAvailabilityHint } from './ProductPicker';
  * flow using the same existing record-sale/ endpoint (sale_type=restock).
  */
 export default function RestockButton() {
+  const isMobile = useMediaQuery('(max-width: 48em)');
   const [opened, setOpened] = useState(false);
   const [stockItemId, setStockItemId] = useState<number | null>(null);
   const [stockQty, setStockQty] = useState<number | null>(null);
@@ -70,6 +72,7 @@ export default function RestockButton() {
         }}
         title={t`Restock`}
         centered
+        fullScreen={isMobile}
       >
         <Stack>
           {errorDetail && (

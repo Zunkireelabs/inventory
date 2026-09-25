@@ -99,7 +99,7 @@ export default function StationeryDashboard() {
   return (
     <Stack gap='lg'>
       {/* Primary actions — always first, per the product spec: staff act before they read numbers */}
-      <Group>
+      <Group grow>
         <RecordSaleButton onSuccess={() => {
           salesToday.refetch();
           recentMovements.refetch();

@@ -1,5 +1,5 @@
 import { t } from '@lingui/core/macro';
-import { Group } from '@mantine/core';
+import { SimpleGrid } from '@mantine/core';
 import { DateInput, type DateValue } from '@mantine/dates';
 
 /**
@@ -18,7 +18,7 @@ export function ReportDateRangeFilter({
   onDateToChange: (value: DateValue) => void;
 }>) {
   return (
-    <Group>
+    <SimpleGrid cols={{ base: 1, xs: 2 }} spacing='sm'>
       <DateInput
         label={t`From`}
         value={dateFrom}
@@ -33,7 +33,7 @@ export function ReportDateRangeFilter({
         clearable
         minDate={dateFrom ?? undefined}
       />
-    </Group>
+    </SimpleGrid>
   );
 }
 
