@@ -92,8 +92,9 @@ const INITIAL_FORM = {
  * form renderer around.
  */
 export default function RecordSaleButton({
-  onSuccess
-}: Readonly<{ onSuccess?: () => void }>) {
+  onSuccess,
+  fullWidth
+}: Readonly<{ onSuccess?: () => void; fullWidth?: boolean }>) {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 48em)');
   const [opened, setOpened] = useState(false);
@@ -189,6 +190,7 @@ export default function RecordSaleButton({
     <>
       <Button
         size='md'
+        fullWidth={fullWidth}
         onClick={() => setOpened(true)}
         leftSection={<IconReceipt2 size={18} />}
       >

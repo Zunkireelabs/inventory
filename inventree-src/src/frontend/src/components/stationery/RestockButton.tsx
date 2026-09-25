@@ -15,7 +15,9 @@ import { ProductPicker, StockAvailabilityHint } from './ProductPicker';
  * inventory operation, not a sale) — this is its own small self-contained
  * flow using the same existing record-sale/ endpoint (sale_type=restock).
  */
-export default function RestockButton() {
+export default function RestockButton({
+  fullWidth
+}: Readonly<{ fullWidth?: boolean }> = {}) {
   const isMobile = useMediaQuery('(max-width: 48em)');
   const [opened, setOpened] = useState(false);
   const [stockItemId, setStockItemId] = useState<number | null>(null);
@@ -59,6 +61,7 @@ export default function RestockButton() {
       <Button
         variant='light'
         size='md'
+        fullWidth={fullWidth}
         leftSection={<IconPackageImport size={18} />}
         onClick={() => setOpened(true)}
       >

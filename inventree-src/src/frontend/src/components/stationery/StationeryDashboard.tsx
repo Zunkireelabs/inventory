@@ -99,15 +99,18 @@ export default function StationeryDashboard() {
   return (
     <Stack gap='lg'>
       {/* Primary actions — always first, per the product spec: staff act before they read numbers */}
-      <Group grow>
-        <RecordSaleButton onSuccess={() => {
-          salesToday.refetch();
-          recentMovements.refetch();
-          lowStock.refetch();
-        }} />
-        <ReceivePaymentButton />
-        <RestockButton />
-      </Group>
+      <SimpleGrid cols={{ base: 1, xs: 3 }} spacing='sm'>
+        <RecordSaleButton
+          fullWidth
+          onSuccess={() => {
+            salesToday.refetch();
+            recentMovements.refetch();
+            lowStock.refetch();
+          }}
+        />
+        <ReceivePaymentButton fullWidth />
+        <RestockButton fullWidth />
+      </SimpleGrid>
 
       {/* Headline metrics */}
       <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }}>

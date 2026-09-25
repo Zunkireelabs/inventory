@@ -31,7 +31,9 @@ const METHOD_OPTIONS = [
  * (a later phase); this is the dashboard-level shortcut into the same
  * existing endpoint.
  */
-export default function ReceivePaymentButton() {
+export default function ReceivePaymentButton({
+  fullWidth
+}: Readonly<{ fullWidth?: boolean }> = {}) {
   const isMobile = useMediaQuery('(max-width: 48em)');
   const [opened, setOpened] = useState(false);
   const [customerId, setCustomerId] = useState<number | null>(null);
@@ -95,6 +97,7 @@ export default function ReceivePaymentButton() {
       <Button
         variant='light'
         size='md'
+        fullWidth={fullWidth}
         leftSection={<IconCash size={18} />}
         onClick={() => setOpened(true)}
       >
