@@ -88,7 +88,7 @@ msgid "Cancel"
 msgstr "Tühista"
 
 #: lib/components/RowActions.tsx:146
-#: src/components/nav/NavigationDrawer.tsx:185
+#: src/components/nav/NavigationDrawer.tsx:198
 #: src/forms/PurchaseOrderForms.tsx:940
 #: src/forms/StockForms.tsx:950
 #: src/forms/StockForms.tsx:1517
@@ -173,6 +173,7 @@ msgstr "Ei"
 #: src/pages/build/BuildOrderDetailsPanel.tsx:45
 #: src/pages/part/PartDetail.tsx:814
 #: src/pages/part/bom/BomCompare.tsx:203
+#: src/pages/stationery/GiftReportPage.tsx:86
 #: src/tables/build/BuildOrderParametricTable.tsx:29
 #: src/tables/part/PartTestResultTable.tsx:251
 #: src/tables/part/RelatedPartTable.tsx:53
@@ -184,7 +185,7 @@ msgstr "Osa"
 #: lib/enums/ModelInformation.tsx:62
 #: lib/enums/Roles.tsx:37
 #: src/components/nav/NavigationDrawer.tsx:70
-#: src/defaults/links.tsx:39
+#: src/defaults/links.tsx:41
 #: src/pages/Index/Settings/SystemSettings.tsx:217
 #: src/pages/part/CategoryDetail.tsx:218
 #: src/pages/part/CategoryDetail.tsx:279
@@ -254,7 +255,7 @@ msgid "Manufacturer Part"
 msgstr ""
 
 #: lib/enums/ModelInformation.tsx:107
-#: src/pages/purchasing/PurchasingIndex.tsx:202
+#: src/pages/purchasing/PurchasingIndex.tsx:204
 msgid "Manufacturer Parts"
 msgstr ""
 
@@ -287,6 +288,8 @@ msgstr "Osa kategooriad"
 #: src/forms/BuildForms.tsx:706
 #: src/forms/BuildForms.tsx:868
 #: src/forms/SalesOrderForms.tsx:437
+#: src/forms/StationeryForms.tsx:31
+#: src/forms/StationeryForms.tsx:73
 #: src/forms/TransferOrderForms.tsx:241
 #: src/pages/stock/StockDetail.tsx:743
 #: src/tables/part/PartTestResultTable.tsx:260
@@ -299,7 +302,7 @@ msgstr ""
 
 #: lib/enums/ModelInformation.tsx:127
 #: lib/enums/Roles.tsx:49
-#: src/pages/company/CompanyDetail.tsx:138
+#: src/pages/company/CompanyDetail.tsx:140
 #: src/pages/part/CategoryDetail.tsx:247
 #: src/pages/part/PartStockHistoryDetail.tsx:120
 #: src/pages/stock/LocationDetail.tsx:157
@@ -351,7 +354,7 @@ msgstr ""
 
 #: lib/enums/ModelInformation.tsx:160
 #: lib/enums/Roles.tsx:35
-#: src/defaults/actions.tsx:182
+#: src/defaults/actions.tsx:175
 #: src/pages/Index/Settings/SystemSettings.tsx:324
 #: src/pages/build/BuildIndex.tsx:87
 #: src/pages/part/PartDetail.tsx:422
@@ -377,7 +380,7 @@ msgstr ""
 
 #: lib/enums/ModelInformation.tsx:184
 #: src/components/previews/models/CompanyPreview.tsx:15
-#: src/pages/company/CompanyDetail.tsx:297
+#: src/pages/company/CompanyDetail.tsx:308
 #: src/tables/company/CompanyTable.tsx:65
 #: src/tables/company/ContactTable.tsx:67
 #: src/tables/company/ParametricCompanyTable.tsx:32
@@ -421,9 +424,9 @@ msgstr "Ostukorraldus"
 
 #: lib/enums/ModelInformation.tsx:200
 #: lib/enums/Roles.tsx:41
-#: src/defaults/actions.tsx:133
+#: src/defaults/actions.tsx:126
 #: src/pages/Index/Settings/SystemSettings.tsx:352
-#: src/pages/company/CompanyDetail.tsx:129
+#: src/pages/company/CompanyDetail.tsx:131
 #: src/pages/company/SupplierPartDetail.tsx:105
 #: src/pages/part/PartDetail.tsx:392
 #: src/pages/purchasing/PurchasingIndex.tsx:95
@@ -456,11 +459,11 @@ msgstr ""
 
 #: lib/enums/ModelInformation.tsx:217
 #: lib/enums/Roles.tsx:47
-#: src/defaults/actions.tsx:143
+#: src/defaults/actions.tsx:136
 #: src/pages/Index/Settings/SystemSettings.tsx:371
-#: src/pages/company/CompanyDetail.tsx:151
+#: src/pages/company/CompanyDetail.tsx:153
 #: src/pages/part/PartDetail.tsx:404
-#: src/pages/sales/SalesIndex.tsx:109
+#: src/pages/sales/SalesIndex.tsx:110
 msgid "Sales Orders"
 msgstr ""
 
@@ -482,11 +485,11 @@ msgstr ""
 
 #: lib/enums/ModelInformation.tsx:239
 #: lib/enums/Roles.tsx:43
-#: src/defaults/actions.tsx:163
+#: src/defaults/actions.tsx:156
 #: src/pages/Index/Settings/SystemSettings.tsx:384
-#: src/pages/company/CompanyDetail.tsx:159
+#: src/pages/company/CompanyDetail.tsx:161
 #: src/pages/part/PartDetail.tsx:415
-#: src/pages/sales/SalesIndex.tsx:150
+#: src/pages/sales/SalesIndex.tsx:151
 msgid "Return Orders"
 msgstr ""
 
@@ -508,7 +511,7 @@ msgstr ""
 
 #: lib/enums/ModelInformation.tsx:256
 #: lib/enums/Roles.tsx:45
-#: src/defaults/actions.tsx:153
+#: src/defaults/actions.tsx:146
 #: src/pages/Index/Settings/SystemSettings.tsx:306
 #: src/pages/part/PartDetail.tsx:429
 #: src/pages/stock/LocationDetail.tsx:171
@@ -529,7 +532,7 @@ msgid "Address"
 msgstr "Aadress"
 
 #: lib/enums/ModelInformation.tsx:272
-#: src/pages/company/CompanyDetail.tsx:196
+#: src/pages/company/CompanyDetail.tsx:207
 msgid "Addresses"
 msgstr "Aadressid"
 
@@ -543,7 +546,7 @@ msgid "Contact"
 msgstr "Kontakt"
 
 #: lib/enums/ModelInformation.tsx:279
-#: src/pages/company/CompanyDetail.tsx:190
+#: src/pages/company/CompanyDetail.tsx:201
 #: src/pages/core/CoreIndex.tsx:34
 msgid "Contacts"
 msgstr "Kontaktid"
@@ -573,8 +576,8 @@ msgid "User"
 msgstr "Kasutaja"
 
 #: lib/enums/ModelInformation.tsx:293
-#: src/components/nav/NavigationDrawer.tsx:105
-#: src/defaults/actions.tsx:220
+#: src/components/nav/NavigationDrawer.tsx:118
+#: src/defaults/actions.tsx:213
 #: src/pages/Index/Settings/AdminCenter/UserManagementPanel.tsx:15
 #: src/pages/core/CoreIndex.tsx:22
 #: src/pages/core/UserDetail.tsx:225
@@ -587,7 +590,7 @@ msgid "Group"
 msgstr "Rühm"
 
 #: lib/enums/ModelInformation.tsx:300
-#: src/components/nav/NavigationDrawer.tsx:111
+#: src/components/nav/NavigationDrawer.tsx:124
 #: src/pages/Index/Settings/AdminCenter/UserManagementPanel.tsx:23
 #: src/pages/core/CoreIndex.tsx:28
 #: src/pages/core/GroupDetail.tsx:80
@@ -609,7 +612,7 @@ msgid "Label Template"
 msgstr ""
 
 #: lib/enums/ModelInformation.tsx:316
-#: src/defaults/actions.tsx:260
+#: src/defaults/actions.tsx:253
 #: src/pages/Index/Settings/AdminCenter/Index.tsx:238
 msgid "Label Templates"
 msgstr ""
@@ -619,7 +622,7 @@ msgid "Report Template"
 msgstr ""
 
 #: lib/enums/ModelInformation.tsx:324
-#: src/defaults/actions.tsx:250
+#: src/defaults/actions.tsx:243
 #: src/pages/Index/Settings/AdminCenter/Index.tsx:244
 msgid "Report Templates"
 msgstr ""
@@ -802,7 +805,7 @@ msgstr "Vöötkood"
 
 #: src/components/barcodes/BarcodeInput.tsx:35
 #: src/components/barcodes/BarcodeKeyboardInput.tsx:18
-#: src/defaults/actions.tsx:173
+#: src/defaults/actions.tsx:166
 msgid "Scan"
 msgstr "Skanneeri"
 
@@ -832,7 +835,7 @@ msgstr ""
 
 #: src/components/barcodes/BarcodeScanDialog.tsx:56
 #: src/components/buttons/ScanButton.tsx:56
-#: src/components/nav/NavigationDrawer.tsx:122
+#: src/components/nav/NavigationDrawer.tsx:135
 #: src/forms/PurchaseOrderForms.tsx:534
 #: src/forms/PurchaseOrderForms.tsx:674
 msgid "Scan Barcode"
@@ -1105,9 +1108,9 @@ msgstr "Üle tähtaja"
 #: src/components/calendar/OrderCalendarToolTip.tsx:58
 #: src/components/tables/ColumnRenderers.tsx:731
 #: src/pages/build/BuildOrderDetailsPanel.tsx:204
-#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:190
-#: src/pages/sales/ReturnOrderDetailsPanel.tsx:203
-#: src/pages/sales/SalesOrderDetailsPanel.tsx:204
+#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:198
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:211
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:212
 #: src/pages/stock/TransferOrderDetailsPanel.tsx:133
 msgid "Start Date"
 msgstr ""
@@ -1115,9 +1118,9 @@ msgstr ""
 #: src/components/calendar/OrderCalendarToolTip.tsx:64
 #: src/components/tables/ColumnRenderers.tsx:740
 #: src/pages/build/BuildOrderDetailsPanel.tsx:212
-#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:198
-#: src/pages/sales/ReturnOrderDetailsPanel.tsx:211
-#: src/pages/sales/SalesOrderDetailsPanel.tsx:212
+#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:206
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:219
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:220
 #: src/pages/stock/TransferOrderDetailsPanel.tsx:141
 #: src/tables/part/PartPurchaseOrdersTable.tsx:110
 #: src/tables/part/PartSalesOrdersTable.tsx:72
@@ -1163,8 +1166,8 @@ msgstr "Nõustu paigutusega"
 #: src/components/dashboard/DashboardMenu.tsx:94
 #: src/components/nav/NavigationDrawer.tsx:64
 #: src/defaults/actions.tsx:62
-#: src/defaults/links.tsx:34
-#: src/pages/Index/Home.tsx:8
+#: src/defaults/links.tsx:36
+#: src/pages/Index/Home.tsx:12
 msgid "Dashboard"
 msgstr "Töölaud"
 
@@ -1234,6 +1237,7 @@ msgid "Latest parts"
 msgstr ""
 
 #: src/components/dashboard/DashboardWidgetLibrary.tsx:64
+#: src/components/stationery/StationeryDashboard.tsx:140
 #: src/tables/part/PartTableFilters.tsx:79
 msgid "Low Stock"
 msgstr "Madal laoseis"
@@ -1324,7 +1328,7 @@ msgid "Show the number of sales orders which are assigned to you"
 msgstr ""
 
 #: src/components/dashboard/DashboardWidgetLibrary.tsx:156
-#: src/pages/sales/SalesIndex.tsx:137
+#: src/pages/sales/SalesIndex.tsx:138
 msgid "Pending Shipments"
 msgstr ""
 
@@ -1382,12 +1386,12 @@ msgstr ""
 
 #: src/components/dashboard/DashboardWidgetLibrary.tsx:224
 #: src/components/dashboard/widgets/GetStartedWidget.tsx:15
-#: src/defaults/links.tsx:98
+#: src/defaults/links.tsx:111
 msgid "Getting Started"
 msgstr "Alustamine"
 
 #: src/components/dashboard/DashboardWidgetLibrary.tsx:225
-#: src/defaults/links.tsx:101
+#: src/defaults/links.tsx:114
 msgid "Getting started with InvenTree"
 msgstr "Arendage InvenTree'ga"
 
@@ -1401,7 +1405,7 @@ msgid "The latest news from InvenTree"
 msgstr ""
 
 #: src/components/dashboard/widgets/ColorToggleWidget.tsx:18
-#: src/components/nav/MainMenu.tsx:93
+#: src/components/nav/MainMenu.tsx:91
 msgid "Change Color Mode"
 msgstr "Muuda värvirežiimi"
 
@@ -1810,6 +1814,10 @@ msgstr ""
 
 #: src/components/editors/NotesEditor.tsx:701
 #: src/components/panels/NotesPanel.tsx:24
+#: src/components/stationery/RecordSaleButton.tsx:316
+#: src/components/stationery/RestockButton.tsx:96
+#: src/forms/StationeryForms.tsx:56
+#: src/forms/StationeryForms.tsx:104
 #: src/forms/StockForms.tsx:1585
 #: src/tables/part/PartTestResultTable.tsx:218
 #: src/tables/stock/StockTrackingTable.tsx:279
@@ -2273,8 +2281,8 @@ msgid "API Version"
 msgstr "API versioon"
 
 #: src/components/forms/InstanceOptions.tsx:143
-#: src/components/nav/NavigationDrawer.tsx:192
-#: src/defaults/actions.tsx:230
+#: src/components/nav/NavigationDrawer.tsx:205
+#: src/defaults/actions.tsx:223
 #: src/pages/Index/Settings/AdminCenter/Index.tsx:269
 #: src/pages/Index/Settings/AdminCenter/PluginManagementPanel.tsx:58
 #: src/pages/Index/Settings/SystemSettings.tsx:397
@@ -2401,6 +2409,7 @@ msgid "Select..."
 msgstr ""
 
 #: src/components/forms/fields/TreeField.tsx:414
+#: src/components/stationery/ReceivePaymentButton.tsx:128
 #: src/components/wizards/ImportPartWizard.tsx:221
 #: src/forms/StockForms.tsx:1306
 msgid "Loading..."
@@ -2687,10 +2696,15 @@ msgstr "Tundmatu viga"
 msgid "None"
 msgstr "Ühtegi"
 
+#: src/components/items/InvenTreeLogo.tsx:34
+#: src/components/items/InvenTreeLogo.tsx:52
+msgid "ITS Logo"
+msgstr ""
+
 #: src/components/items/InvenTreeLogo.tsx:36
 #: src/components/items/InvenTreeLogo.tsx:40
-msgid "InvenTree Logo"
-msgstr "InvenTree Logo"
+#~ msgid "InvenTree Logo"
+#~ msgstr "InvenTree Logo"
 
 #: src/components/items/LanguageSelect.tsx:44
 msgid "Default Language"
@@ -2872,7 +2886,7 @@ msgstr "Lingid"
 
 #: src/components/modals/AboutInvenTreeModal.tsx:176
 #: src/defaults/actions.tsx:69
-#: src/defaults/links.tsx:180
+#: src/defaults/links.tsx:193
 msgid "Documentation"
 msgstr "Dokumentatsioon"
 
@@ -3097,7 +3111,7 @@ msgid "Open search"
 msgstr ""
 
 #: src/components/nav/Header.tsx:210
-#: src/components/nav/NavigationDrawer.tsx:134
+#: src/components/nav/NavigationDrawer.tsx:147
 #: src/components/nav/NotificationDrawer.tsx:185
 #: src/pages/Index/Settings/SystemSettings.tsx:145
 #: src/pages/Index/Settings/UserSettings.tsx:111
@@ -3131,12 +3145,21 @@ msgstr "Midagi ei leitud..."
 #~ msgid "Profile"
 #~ msgstr "Profile"
 
-#: src/components/nav/MainMenu.tsx:54
-#: src/components/nav/NavigationDrawer.tsx:180
+#: src/components/nav/MainMenu.tsx:52
+#: src/components/nav/NavigationDrawer.tsx:193
 #: src/pages/Index/Settings/AdminCenter/EmailManagementPanel.tsx:21
 #: src/pages/Index/Settings/AdminCenter/UserManagementPanel.tsx:39
 msgid "Settings"
 msgstr "Seaded"
+
+#: src/components/nav/MainMenu.tsx:59
+#: src/components/nav/NavigationDrawer.tsx:153
+#: src/components/nav/SettingsHeader.tsx:40
+#: src/defaults/actions.tsx:99
+#: src/pages/Index/Settings/UserSettings.tsx:148
+#: src/pages/Index/Settings/UserSettings.tsx:152
+msgid "User Settings"
+msgstr "Kasutaja seaded"
 
 #: src/components/nav/MainMenu.tsx:59
 #: src/defaults/menuItems.tsx:15
@@ -3144,59 +3167,39 @@ msgstr "Seaded"
 #~ msgstr "Account settings"
 
 #: src/components/nav/MainMenu.tsx:61
-#: src/components/nav/NavigationDrawer.tsx:140
-#: src/components/nav/SettingsHeader.tsx:40
-#: src/defaults/actions.tsx:106
-#: src/pages/Index/Settings/UserSettings.tsx:148
-#: src/pages/Index/Settings/UserSettings.tsx:152
-msgid "User Settings"
-msgstr "Kasutaja seaded"
-
-#: src/components/nav/MainMenu.tsx:61
 #: src/pages/Index/Settings/UserSettings.tsx:145
 #~ msgid "Account Settings"
 #~ msgstr "Account Settings"
 
-#: src/components/nav/MainMenu.tsx:68
-#~ msgid "Current language {locale}"
-#~ msgstr "Current language {locale}"
-
-#: src/components/nav/MainMenu.tsx:69
-#: src/components/nav/NavigationDrawer.tsx:146
+#: src/components/nav/MainMenu.tsx:67
+#: src/components/nav/NavigationDrawer.tsx:159
 #: src/components/nav/SettingsHeader.tsx:41
-#: src/defaults/actions.tsx:191
+#: src/defaults/actions.tsx:184
 #: src/pages/Index/Settings/SystemSettings.tsx:416
 #: src/pages/Index/Settings/SystemSettings.tsx:421
 msgid "System Settings"
 msgstr "Süsteemi seaded"
 
+#: src/components/nav/MainMenu.tsx:68
+#~ msgid "Current language {locale}"
+#~ msgstr "Current language {locale}"
+
 #: src/components/nav/MainMenu.tsx:71
 #~ msgid "Switch to pseudo language"
 #~ msgstr "Switch to pseudo language"
 
-#: src/components/nav/MainMenu.tsx:78
-#: src/components/nav/NavigationDrawer.tsx:153
+#: src/components/nav/MainMenu.tsx:76
+#: src/components/nav/NavigationDrawer.tsx:166
 #: src/components/nav/SettingsHeader.tsx:42
-#: src/defaults/actions.tsx:200
+#: src/defaults/actions.tsx:193
 #: src/pages/Index/Settings/AdminCenter/Index.tsx:344
 #: src/pages/Index/Settings/AdminCenter/Index.tsx:349
 msgid "Admin Center"
 msgstr "Admini keskus"
 
-#: src/components/nav/MainMenu.tsx:99
-#: src/defaults/actions.tsx:78
-#: src/defaults/links.tsx:152
-#: src/defaults/links.tsx:205
-msgid "About InvenTree"
-msgstr "InvenTree kohta"
-
-#: src/components/nav/MainMenu.tsx:108
+#: src/components/nav/MainMenu.tsx:100
 msgid "Logout"
 msgstr "Logi välja"
-
-#: src/components/nav/NavHoverMenu.tsx:84
-#~ msgid "View all"
-#~ msgstr "View all"
 
 #: src/components/nav/NavHoverMenu.tsx:100
 #: src/components/nav/NavHoverMenu.tsx:110
@@ -3214,7 +3217,7 @@ msgstr "Logi välja"
 #: src/components/nav/NavigationDrawer.tsx:77
 #: src/components/render/Part.tsx:36
 #: src/components/wizards/ImportPartWizard.tsx:808
-#: src/defaults/links.tsx:47
+#: src/defaults/links.tsx:49
 #: src/forms/StockForms.tsx:1515
 #: src/pages/Index/Settings/SystemSettings.tsx:259
 #: src/pages/part/PartDetail.tsx:304
@@ -3227,41 +3230,55 @@ msgid "Stock"
 msgstr "Laoseis"
 
 #: src/components/nav/NavigationDrawer.tsx:84
-#: src/defaults/links.tsx:56
+#: src/defaults/links.tsx:58
 #: src/pages/Index/Settings/SystemSettings.tsx:319
 #: src/pages/build/BuildDetail.tsx:602
 #: src/pages/build/BuildIndex.tsx:121
 msgid "Manufacturing"
 msgstr "Tootmine"
 
-#: src/components/nav/NavigationDrawer.tsx:91
-#: src/defaults/links.tsx:62
+#: src/components/nav/NavigationDrawer.tsx:92
+#: src/defaults/links.tsx:65
 #: src/pages/Index/Settings/SystemSettings.tsx:348
 #: src/pages/company/ManufacturerDetail.tsx:9
 #: src/pages/company/ManufacturerPartDetail.tsx:193
 #: src/pages/company/SupplierDetail.tsx:9
 #: src/pages/company/SupplierPartDetail.tsx:211
 #: src/pages/purchasing/PurchaseOrderDetail.tsx:379
-#: src/pages/purchasing/PurchasingIndex.tsx:237
+#: src/pages/purchasing/PurchasingIndex.tsx:241
 msgid "Purchasing"
 msgstr "Ostmine"
 
-#: src/components/nav/NavigationDrawer.tsx:98
-#: src/defaults/links.tsx:68
+#: src/components/nav/NavigationDrawer.tsx:99
+#: src/components/stationery/ReportTabs.tsx:16
+#: src/defaults/links.tsx:71
 #: src/pages/Index/Settings/SystemSettings.tsx:366
 #: src/pages/company/CustomerDetail.tsx:9
 #: src/pages/sales/ReturnOrderDetail.tsx:362
-#: src/pages/sales/SalesIndex.tsx:214
+#: src/pages/sales/SalesIndex.tsx:216
 #: src/pages/sales/SalesOrderDetail.tsx:432
 #: src/pages/sales/SalesOrderShipmentDetail.tsx:280
 msgid "Sales"
 msgstr "Müük"
 
-#: src/components/nav/NavigationDrawer.tsx:175
+#: src/components/nav/NavigationDrawer.tsx:106
+#: src/components/stationery/ReportTabs.tsx:17
+#: src/defaults/links.tsx:79
+#: src/pages/company/CompanyDetail.tsx:192
+#: src/pages/stationery/InvoiceListPage.tsx:24
+msgid "Receivables"
+msgstr ""
+
+#: src/components/nav/NavigationDrawer.tsx:112
+#: src/defaults/links.tsx:84
+msgid "Reports"
+msgstr "Reports"
+
+#: src/components/nav/NavigationDrawer.tsx:188
 msgid "Navigation"
 msgstr "Navigeerimine"
 
-#: src/components/nav/NavigationDrawer.tsx:203
+#: src/components/nav/NavigationDrawer.tsx:216
 msgid "About"
 msgstr "Teave"
 
@@ -3333,7 +3350,7 @@ msgid "Manufacturers"
 msgstr ""
 
 #: src/components/nav/SearchDrawer.tsx:336
-#: src/pages/sales/SalesIndex.tsx:178
+#: src/pages/sales/SalesIndex.tsx:179
 msgid "Customers"
 msgstr "Kliendid"
 
@@ -3467,6 +3484,7 @@ msgstr ""
 #: src/pages/part/pricing/PurchaseHistoryPanel.tsx:42
 #: src/pages/part/pricing/SaleHistoryPanel.tsx:39
 #: src/tables/part/PartTestResultTable.tsx:226
+#: src/tables/stationery/PaymentHistoryTable.tsx:26
 msgid "Date"
 msgstr "Kuupäev"
 
@@ -3635,7 +3653,7 @@ msgstr ""
 #: src/components/render/Plugin.tsx:17
 #: src/components/render/User.tsx:37
 #: src/components/tables/ColumnRenderers.tsx:652
-#: src/pages/company/CompanyDetail.tsx:279
+#: src/pages/company/CompanyDetail.tsx:290
 #: src/pages/company/SupplierPartDetail.tsx:224
 #: src/pages/core/UserDetail.tsx:210
 #: src/pages/part/PartDetail.tsx:623
@@ -3731,6 +3749,7 @@ msgid "Serial Number"
 msgstr "Seerianumber"
 
 #: src/components/render/Stock.tsx:100
+#: src/components/stationery/RecordSaleButton.tsx:288
 #: src/components/wizards/OrderPartsWizard.tsx:389
 #: src/forms/BomForms.tsx:42
 #: src/forms/BuildForms.tsx:284
@@ -3739,6 +3758,8 @@ msgstr "Seerianumber"
 #: src/forms/PurchaseOrderForms.tsx:939
 #: src/forms/ReturnOrderForms.tsx:243
 #: src/forms/SalesOrderForms.tsx:438
+#: src/forms/StationeryForms.tsx:38
+#: src/forms/StationeryForms.tsx:80
 #: src/forms/StockForms.tsx:724
 #: src/forms/StockForms.tsx:948
 #: src/forms/StockForms.tsx:1563
@@ -3752,6 +3773,9 @@ msgstr "Seerianumber"
 #: src/pages/part/pricing/BomPricingPanel.tsx:113
 #: src/pages/part/pricing/PriceBreakPanel.tsx:89
 #: src/pages/part/pricing/PriceBreakPanel.tsx:173
+#: src/pages/stationery/GiftReportPage.tsx:87
+#: src/pages/stationery/InvoiceDetailPage.tsx:159
+#: src/pages/stationery/SalesReportPage.tsx:100
 #: src/pages/stock/StockDetail.tsx:673
 #: src/pages/stock/StockDetailsPanel.tsx:197
 #: src/tables/build/BuildLineTable.tsx:99
@@ -3921,6 +3945,385 @@ msgstr ""
 msgid "No settings specified"
 msgstr ""
 
+#: src/components/stationery/CustomerPicker.tsx:45
+#: src/forms/StationeryForms.tsx:90
+#: src/pages/company/CompanyDetailsPanel.tsx:84
+#: src/pages/company/CustomerDetail.tsx:8
+#: src/pages/part/pricing/SaleHistoryPanel.tsx:32
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:60
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:60
+#: src/pages/sales/SalesOrderShipmentDetailsPanel.tsx:66
+#: src/pages/stationery/InvoiceDetailPage.tsx:138
+#: src/pages/stationery/ReceivablesReportPage.tsx:138
+#: src/pages/stock/StockDetailsPanel.tsx:306
+#: src/tables/company/CompanyTable.tsx:126
+#: src/tables/part/PartSalesOrdersTable.tsx:51
+#: src/tables/sales/ReturnOrderParametricTable.tsx:25
+#: src/tables/sales/ReturnOrderTable.tsx:64
+#: src/tables/sales/SalesOrderParametricTable.tsx:25
+#: src/tables/sales/SalesOrderShipmentTable.tsx:124
+#: src/tables/sales/SalesOrderTable.tsx:87
+#: src/tables/stationery/InvoiceTable.tsx:60
+#: src/tables/stock/StockTrackingTable.tsx:197
+msgid "Customer"
+msgstr "Klient"
+
+#: src/components/stationery/CustomerPicker.tsx:46
+msgid "Search for a customer..."
+msgstr ""
+
+#: src/components/stationery/CustomerPicker.tsx:54
+#: src/components/stationery/ProductPicker.tsx:79
+msgid "Searching..."
+msgstr ""
+
+#: src/components/stationery/CustomerPicker.tsx:54
+msgid "No customers found"
+msgstr ""
+
+#: src/components/stationery/CustomerReceivablesPanel.tsx:63
+#: src/pages/stationery/ReceivablesReportPage.tsx:89
+msgid "Total Outstanding"
+msgstr ""
+
+#: src/components/stationery/CustomerReceivablesPanel.tsx:68
+msgid "Outstanding Invoices"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:12
+#: src/pages/stationery/ReceivablesReportPage.tsx:93
+msgid "Unpaid"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:13
+#: src/pages/stationery/ReceivablesReportPage.tsx:95
+msgid "Partially Paid"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:14
+#: src/pages/stationery/InvoiceDetailPage.tsx:127
+#: src/pages/stationery/ReceivablesReportPage.tsx:98
+msgid "Paid"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:15
+msgid "Cancelled"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:37
+msgid "Current"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:38
+msgid "1-30 days"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:39
+msgid "31-60 days"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:40
+msgid "61-90 days"
+msgstr ""
+
+#: src/components/stationery/InvoiceStatusBadge.tsx:41
+msgid "90+ days"
+msgstr ""
+
+#: src/components/stationery/ProductPicker.tsx:48
+msgid "Unknown"
+msgstr ""
+
+#: src/components/stationery/ProductPicker.tsx:63
+msgid "Product"
+msgstr ""
+
+#: src/components/stationery/ProductPicker.tsx:64
+msgid "Search for a product..."
+msgstr ""
+
+#: src/components/stationery/ProductPicker.tsx:79
+msgid "No products found"
+msgstr ""
+
+#: src/components/stationery/ProductPicker.tsx:92
+msgid "{quantity} currently in stock"
+msgstr ""
+
+#: src/components/stationery/ProductPicker.tsx:92
+msgid "Out of stock"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:20
+#: src/components/stationery/StationeryDashboard.tsx:38
+#: src/components/stationery/TransactionStatusBadge.tsx:21
+#: src/forms/StationeryForms.tsx:123
+#: src/tables/stationery/PaymentHistoryTable.tsx:16
+msgid "Cash"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:21
+#: src/components/stationery/StationeryDashboard.tsx:39
+#: src/components/stationery/TransactionStatusBadge.tsx:22
+#: src/forms/StationeryForms.tsx:124
+#: src/tables/stationery/PaymentHistoryTable.tsx:17
+msgid "Online"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:22
+#: src/forms/StationeryForms.tsx:125
+#: src/tables/stationery/PaymentHistoryTable.tsx:18
+msgid "Cheque"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:75
+#: src/pages/stationery/InvoiceDetailPage.tsx:84
+msgid "Payment recorded"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:81
+msgid "Could not record payment"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:88
+#: src/components/stationery/RecordSaleButton.tsx:213
+#: src/components/stationery/StationeryDashboard.tsx:129
+#: src/components/tables/Filter.tsx:186
+#: src/pages/stationery/InvoiceDetailPage.tsx:129
+#: src/pages/stationery/ReceivablesReportPage.tsx:111
+#: src/pages/stationery/ReceivablesReportPage.tsx:139
+#: src/tables/part/PartSalesOrdersTable.tsx:93
+#: src/tables/sales/SalesOrderAllocationTable.tsx:91
+#: src/tables/stationery/InvoiceTable.tsx:80
+#: src/tables/stock/TransferOrderAllocationTable.tsx:81
+msgid "Outstanding"
+msgstr "Ootel"
+
+#: src/components/stationery/ReceivePaymentButton.tsx:99
+#: src/components/stationery/ReceivePaymentButton.tsx:107
+msgid "Receive Payment"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:125
+msgid "Invoice"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:129
+msgid "Select an outstanding invoice"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:134
+msgid "No outstanding invoices for this customer"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:139
+#: src/forms/StationeryForms.tsx:114
+#: src/tables/stationery/PaymentHistoryTable.tsx:29
+msgid "Amount"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:147
+#: src/pages/Index/Settings/AccountSettings/SecurityContent.tsx:152
+#: src/tables/stationery/PaymentHistoryTable.tsx:34
+msgid "Method"
+msgstr ""
+
+#: src/components/stationery/ReceivePaymentButton.tsx:154
+#: src/components/tables/ColumnRenderers.tsx:541
+#: src/forms/StationeryForms.tsx:135
+#: src/pages/build/BuildOrderDetailsPanel.tsx:90
+#: src/pages/part/bom/BomCompare.tsx:34
+#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:44
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:45
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:45
+#: src/pages/stock/TransferOrderDetailsPanel.tsx:23
+#: src/tables/build/BuildAllocatedStockTable.tsx:113
+#: src/tables/build/BuildLineTable.tsx:370
+#: src/tables/stationery/InvoiceTable.tsx:46
+#: src/tables/stationery/PaymentHistoryTable.tsx:41
+msgid "Reference"
+msgstr "Viide"
+
+#: src/components/stationery/ReceivePaymentButton.tsx:164
+#: src/pages/stationery/InvoiceDetailPage.tsx:81
+#: src/pages/stationery/InvoiceDetailPage.tsx:115
+msgid "Record Payment"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:43
+#: src/components/stationery/StationeryDashboard.tsx:37
+#: src/pages/stationery/SalesReportPage.tsx:31
+msgid "B2B Credit"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:49
+msgid "Cash Sale"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:55
+msgid "Online Sale"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:61
+#: src/components/stationery/TransactionStatusBadge.tsx:23
+msgid "Gift"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:169
+msgid "Something went wrong recording this sale"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:192
+#: src/components/stationery/RecordSaleButton.tsx:198
+#: src/components/stationery/RecordSaleButton.tsx:234
+msgid "New Sale"
+msgstr ""
+
+#. placeholder {0}: success.reference
+#: src/components/stationery/RecordSaleButton.tsx:210
+msgid "Invoice {0} created"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:213
+#: src/components/stationery/RecordSaleButton.tsx:226
+#: src/components/stationery/RecordSaleButton.tsx:329
+#: src/pages/stationery/InvoiceDetailPage.tsx:126
+#: src/tables/stationery/InvoiceTable.tsx:75
+msgid "Total"
+msgstr "Total"
+
+#: src/components/stationery/RecordSaleButton.tsx:222
+msgid "Sale recorded"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:243
+msgid "View Invoice"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:295
+#: src/forms/StationeryForms.tsx:43
+#: src/forms/StationeryForms.tsx:85
+msgid "Unit Value"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:295
+msgid "Gift Value"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:301
+msgid "Required for gifts"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:307
+#: src/forms/StationeryForms.tsx:98
+#: src/pages/stationery/InvoiceDetailPage.tsx:133
+#: src/tables/stationery/InvoiceTable.tsx:72
+msgid "Due Date"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:308
+msgid "Defaults to 30 days from today"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:343
+msgid "Complete Sale"
+msgstr ""
+
+#: src/components/stationery/ReportDateRangeFilter.tsx:23
+msgid "From"
+msgstr ""
+
+#: src/components/stationery/ReportDateRangeFilter.tsx:30
+#: src/tables/settings/EmailTable.tsx:85
+msgid "To"
+msgstr "Saaja"
+
+#: src/components/stationery/ReportTabs.tsx:18
+#: src/pages/stationery/GiftReportPage.tsx:68
+msgid "Gifts"
+msgstr ""
+
+#: src/components/stationery/RestockButton.tsx:44
+#: src/forms/StockForms.tsx:2000
+msgid "Stock added"
+msgstr ""
+
+#: src/components/stationery/RestockButton.tsx:50
+msgid "Could not add stock"
+msgstr ""
+
+#: src/components/stationery/RestockButton.tsx:63
+#: src/components/stationery/RestockButton.tsx:71
+#: src/components/stationery/TransactionStatusBadge.tsx:24
+msgid "Restock"
+msgstr ""
+
+#: src/components/stationery/RestockButton.tsx:89
+msgid "Quantity to Add"
+msgstr ""
+
+#: src/components/stationery/RestockButton.tsx:108
+#: src/forms/StockForms.tsx:1999
+#: src/hooks/UseStockAdjustActions.tsx:112
+msgid "Add Stock"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:115
+msgid "Today's Sales"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:122
+msgid "Collected Today"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:142
+msgid "No permission to view"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:150
+msgid "No sales recorded yet"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:151
+msgid "Use \"New Sale\" above to record your first transaction."
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:159
+msgid "Sales Today by Type"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:169
+msgid "No sales yet today"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:195
+msgid "Recent Activity"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:205
+msgid "Nothing recorded yet"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:220
+msgid "Outstanding Customers"
+msgstr ""
+
+#: src/components/stationery/StationeryDashboard.tsx:222
+msgid "View all"
+msgstr "View all"
+
+#: src/components/stationery/StationeryDashboard.tsx:232
+msgid "No outstanding balances"
+msgstr ""
+
+#: src/components/stationery/TransactionStatusBadge.tsx:20
+msgid "B2B"
+msgstr ""
+
+#: src/components/stationery/TransactionStatusBadge.tsx:25
+msgid "Correction"
+msgstr ""
+
 #: src/components/tables/ColumnRenderers.tsx:70
 msgid "Part is not active"
 msgstr ""
@@ -4036,18 +4439,6 @@ msgstr "Asukoht"
 msgid "Default Location"
 msgstr ""
 
-#: src/components/tables/ColumnRenderers.tsx:541
-#: src/pages/build/BuildOrderDetailsPanel.tsx:90
-#: src/pages/part/bom/BomCompare.tsx:34
-#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:44
-#: src/pages/sales/ReturnOrderDetailsPanel.tsx:45
-#: src/pages/sales/SalesOrderDetailsPanel.tsx:45
-#: src/pages/stock/TransferOrderDetailsPanel.tsx:23
-#: src/tables/build/BuildAllocatedStockTable.tsx:113
-#: src/tables/build/BuildLineTable.tsx:370
-msgid "Reference"
-msgstr "Viide"
-
 #: src/components/tables/ColumnRenderers.tsx:553
 #: src/forms/PurchaseOrderForms.tsx:851
 #: src/pages/company/SupplierPartDetailsPanel.tsx:74
@@ -4067,22 +4458,25 @@ msgstr ""
 #: src/components/tables/ColumnRenderers.tsx:677
 #: src/components/tables/Filter.tsx:480
 #: src/pages/part/PartDetailsPanel.tsx:282
+#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:172
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:184
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:186
 msgid "Created By"
 msgstr ""
 
 #: src/components/tables/ColumnRenderers.tsx:749
 #: src/pages/part/PartDetailsPanel.tsx:277
-#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:175
-#: src/pages/sales/ReturnOrderDetailsPanel.tsx:187
-#: src/pages/sales/SalesOrderDetailsPanel.tsx:189
+#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:183
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:195
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:197
 #: src/pages/stock/TransferOrderDetailsPanel.tsx:117
 msgid "Creation Date"
 msgstr "Loomise kuupäev"
 
 #: src/components/tables/ColumnRenderers.tsx:758
-#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:207
-#: src/pages/sales/ReturnOrderDetailsPanel.tsx:219
-#: src/pages/sales/SalesOrderDetailsPanel.tsx:219
+#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:215
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:227
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:227
 #: src/pages/stock/TransferOrderDetailsPanel.tsx:149
 #: src/tables/part/PartPurchaseOrdersTable.tsx:115
 msgid "Completion Date"
@@ -4206,13 +4600,6 @@ msgstr "Mulle määratud"
 #: src/components/tables/Filter.tsx:179
 msgid "Show orders assigned to me"
 msgstr "Näita mulle minule määratud tellimusi"
-
-#: src/components/tables/Filter.tsx:186
-#: src/tables/part/PartSalesOrdersTable.tsx:93
-#: src/tables/sales/SalesOrderAllocationTable.tsx:91
-#: src/tables/stock/TransferOrderAllocationTable.tsx:81
-msgid "Outstanding"
-msgstr "Ootel"
 
 #: src/components/tables/Filter.tsx:187
 msgid "Show outstanding items"
@@ -4380,6 +4767,7 @@ msgstr ""
 #: src/tables/settings/CustomStateTable.tsx:79
 #: src/tables/settings/EmailTable.tsx:95
 #: src/tables/settings/ImportSessionTable.tsx:135
+#: src/tables/stationery/InvoiceTable.tsx:85
 #: src/tables/stock/StockItemTable.tsx:202
 #: src/tables/stock/StockTrackingTable.tsx:83
 msgid "Status"
@@ -4495,6 +4883,7 @@ msgstr "Eemalda filter"
 #: src/components/tables/FilterSelectDrawer.tsx:290
 #: src/pages/Index/Settings/AdminCenter/IdentityManagementPanel.tsx:624
 #: src/pages/part/PartStockHistoryDetail.tsx:67
+#: src/pages/stationery/GiftReportPage.tsx:88
 #: src/tables/part/PartTestResultTable.tsx:210
 #: src/tables/stock/StockItemTestResultTable.tsx:205
 msgid "Value"
@@ -5430,7 +5819,7 @@ msgstr ""
 #~ msgstr "Chinese (Traditional)"
 
 #: src/defaults/actions.tsx:41
-#: src/defaults/actions.tsx:113
+#: src/defaults/actions.tsx:106
 msgid "Hotkeys"
 msgstr ""
 
@@ -5447,117 +5836,117 @@ msgstr "Minge InvenTree'i armatuurlauale"
 msgid "Visit the documentation to learn more about InvenTree"
 msgstr "Külastage dokumentatsiooni, et rohkem teada saada InvenTree kohta"
 
-#: src/defaults/actions.tsx:79
-msgid "About the InvenTree org"
-msgstr ""
-
-#: src/defaults/actions.tsx:85
+#: src/defaults/actions.tsx:78
 msgid "Server Information"
 msgstr "Serveri informatsioon"
 
-#: src/defaults/actions.tsx:86
-#: src/defaults/links.tsx:188
+#: src/defaults/actions.tsx:79
+#: src/defaults/links.tsx:201
 msgid "About this InvenTree instance"
 msgstr ""
 
-#: src/defaults/actions.tsx:92
-#: src/defaults/links.tsx:165
-#: src/defaults/links.tsx:194
+#: src/defaults/actions.tsx:79
+#~ msgid "About the InvenTree org"
+#~ msgstr ""
+
+#: src/defaults/actions.tsx:85
+#: src/defaults/links.tsx:178
+#: src/defaults/links.tsx:207
 msgid "License Information"
 msgstr "Litsentsi info"
 
-#: src/defaults/actions.tsx:93
+#: src/defaults/actions.tsx:86
 msgid "Licenses for dependencies of the service"
 msgstr "Teenuste sõltuvuste litsentsid"
 
-#: src/defaults/actions.tsx:99
+#: src/defaults/actions.tsx:92
 msgid "Open Navigation"
 msgstr "Ava menüü"
 
-#: src/defaults/actions.tsx:100
+#: src/defaults/actions.tsx:93
 msgid "Open the main navigation menu"
 msgstr "Ava peamenüü"
 
-#: src/defaults/actions.tsx:107
+#: src/defaults/actions.tsx:100
 msgid "Go to your user settings"
 msgstr "Mine kasutaja seadetesse"
 
-#: src/defaults/actions.tsx:114
+#: src/defaults/actions.tsx:107
 msgid "View a list of available hotkeys"
 msgstr ""
 
-#: src/defaults/actions.tsx:123
+#: src/defaults/actions.tsx:116
 msgid "Import Data"
 msgstr "Impordi andmed"
 
-#: src/defaults/actions.tsx:124
+#: src/defaults/actions.tsx:117
 msgid "Import data from a file"
 msgstr "Impordi andmed failist"
 
-#: src/defaults/actions.tsx:134
+#: src/defaults/actions.tsx:127
 msgid "Go to Purchase Orders"
 msgstr "Mine ostukorraldustesse"
 
-#: src/defaults/actions.tsx:144
+#: src/defaults/actions.tsx:137
 msgid "Go to Sales Orders"
 msgstr "Mine müügitellimustele"
 
-#: src/defaults/actions.tsx:154
+#: src/defaults/actions.tsx:147
 msgid "Go to Transfer Orders"
 msgstr ""
 
-#: src/defaults/actions.tsx:164
+#: src/defaults/actions.tsx:157
 msgid "Go to Return Orders"
 msgstr ""
 
-#: src/defaults/actions.tsx:174
+#: src/defaults/actions.tsx:167
 msgid "Scan a barcode or QR code"
 msgstr ""
 
-#: src/defaults/actions.tsx:183
+#: src/defaults/actions.tsx:176
 msgid "Go to Build Orders"
 msgstr ""
 
-#: src/defaults/actions.tsx:192
+#: src/defaults/actions.tsx:185
 msgid "Go to System Settings"
 msgstr ""
 
-#: src/defaults/actions.tsx:201
+#: src/defaults/actions.tsx:194
 msgid "Go to the Admin Center"
 msgstr ""
 
-#: src/defaults/actions.tsx:210
+#: src/defaults/actions.tsx:203
 msgid "Error Logs"
 msgstr ""
 
-#: src/defaults/actions.tsx:211
+#: src/defaults/actions.tsx:204
 msgid "View error logs for this instance"
 msgstr ""
 
-#: src/defaults/actions.tsx:221
+#: src/defaults/actions.tsx:214
 msgid "Manage user accounts"
 msgstr ""
 
-#: src/defaults/actions.tsx:231
+#: src/defaults/actions.tsx:224
 msgid "Manage InvenTree plugins"
 msgstr ""
 
-#: src/defaults/actions.tsx:240
+#: src/defaults/actions.tsx:233
 #: src/pages/Index/Settings/AdminCenter/Index.tsx:276
 #: src/pages/Index/Settings/AdminCenter/MachineManagementPanel.tsx:52
 #: src/tables/machine/MachineTypeTable.tsx:326
 msgid "Machines"
 msgstr "Masinad"
 
-#: src/defaults/actions.tsx:241
+#: src/defaults/actions.tsx:234
 msgid "Manage machines and machine types"
 msgstr ""
 
-#: src/defaults/actions.tsx:251
+#: src/defaults/actions.tsx:244
 msgid "Manage report templates"
 msgstr ""
 
-#: src/defaults/actions.tsx:261
+#: src/defaults/actions.tsx:254
 msgid "Manage label templates"
 msgstr ""
 
@@ -5635,60 +6024,65 @@ msgstr ""
 #~ msgid "InvenTree"
 #~ msgstr "InvenTree"
 
-#: src/defaults/links.tsx:105
-msgid "API"
-msgstr "API"
-
-#: src/defaults/links.tsx:108
-msgid "InvenTree API documentation"
-msgstr "InvenTree dokumentatsioon"
-
-#: src/defaults/links.tsx:112
-msgid "Developer Manual"
-msgstr "Arendaja käsiraamat"
-
-#: src/defaults/links.tsx:115
-msgid "InvenTree developer manual"
-msgstr "InvenTree arendaja käsiraamat"
-
 #: src/defaults/links.tsx:117
 #~ msgid "Licenses for packages used by InvenTree"
 #~ msgstr "Licenses for packages used by InvenTree"
 
-#: src/defaults/links.tsx:119
+#: src/defaults/links.tsx:118
+msgid "API"
+msgstr "API"
+
+#: src/defaults/links.tsx:121
+msgid "InvenTree API documentation"
+msgstr "InvenTree dokumentatsioon"
+
+#: src/defaults/links.tsx:125
+msgid "Developer Manual"
+msgstr "Arendaja käsiraamat"
+
+#: src/defaults/links.tsx:128
+msgid "InvenTree developer manual"
+msgstr "InvenTree arendaja käsiraamat"
+
+#: src/defaults/links.tsx:132
 msgid "FAQ"
 msgstr "KKK"
-
-#: src/defaults/links.tsx:122
-msgid "Frequently asked questions"
-msgstr "Korduma kippuvad küsimused"
-
-#: src/defaults/links.tsx:126
-msgid "GitHub Repository"
-msgstr ""
-
-#: src/defaults/links.tsx:129
-msgid "InvenTree source code on GitHub"
-msgstr ""
 
 #: src/defaults/links.tsx:134
 #~ msgid "Licenses"
 #~ msgstr "Licenses"
 
+#: src/defaults/links.tsx:135
+msgid "Frequently asked questions"
+msgstr "Korduma kippuvad küsimused"
+
 #: src/defaults/links.tsx:139
-#: src/defaults/links.tsx:187
+msgid "GitHub Repository"
+msgstr ""
+
+#: src/defaults/links.tsx:142
+msgid "InvenTree source code on GitHub"
+msgstr ""
+
+#: src/defaults/links.tsx:152
+#: src/defaults/links.tsx:200
 msgid "System Information"
 msgstr "Süsteemi info"
 
-#: src/defaults/links.tsx:181
+#: src/defaults/links.tsx:165
+#: src/defaults/links.tsx:218
+msgid "About InvenTree"
+msgstr "InvenTree kohta"
+
+#: src/defaults/links.tsx:194
 msgid "InvenTree documentation"
 msgstr ""
 
-#: src/defaults/links.tsx:195
+#: src/defaults/links.tsx:208
 msgid "Licenses for dependencies of the InvenTree software"
 msgstr ""
 
-#: src/defaults/links.tsx:206
+#: src/defaults/links.tsx:219
 msgid "About the InvenTree Project"
 msgstr ""
 
@@ -6262,6 +6656,26 @@ msgstr ""
 msgid "Leave blank to use the order address"
 msgstr ""
 
+#: src/forms/StationeryForms.tsx:52
+msgid "Required for gifts — the value given away, for reporting"
+msgstr ""
+
+#: src/forms/StationeryForms.tsx:101
+msgid "Defaults to 30 days from today if not set"
+msgstr ""
+
+#: src/forms/StationeryForms.tsx:119
+msgid "Payment Method"
+msgstr ""
+
+#: src/forms/StationeryForms.tsx:129
+msgid "Payment Date"
+msgstr ""
+
+#: src/forms/StationeryForms.tsx:132
+msgid "Defaults to today if not set"
+msgstr ""
+
 #: src/forms/StockForms.tsx:110
 #~ msgid "Create Stock Item"
 #~ msgstr "Create Stock Item"
@@ -6353,6 +6767,7 @@ msgstr ""
 #: src/pages/part/pricing/PurchaseHistoryPanel.tsx:72
 #: src/pages/part/pricing/PurchaseHistoryPanel.tsx:129
 #: src/pages/part/pricing/SupplierPricingPanel.tsx:67
+#: src/pages/stationery/InvoiceDetailPage.tsx:160
 #: src/pages/stock/StockDetailsPanel.tsx:323
 #: src/tables/bom/BomTable.tsx:314
 #: src/tables/general/ExtraLineItemTable.tsx:73
@@ -6408,15 +6823,6 @@ msgstr ""
 #: src/pages/Index/Scan.tsx:180
 msgid "Count"
 msgstr "Kogus"
-
-#: src/forms/StockForms.tsx:1999
-#: src/hooks/UseStockAdjustActions.tsx:112
-msgid "Add Stock"
-msgstr ""
-
-#: src/forms/StockForms.tsx:2000
-msgid "Stock added"
-msgstr ""
 
 #: src/forms/StockForms.tsx:2003
 msgid "Increase the quantity of the selected stock items by a given amount."
@@ -7815,10 +8221,6 @@ msgstr ""
 msgid "Timestamp"
 msgstr ""
 
-#: src/pages/Index/Settings/AccountSettings/SecurityContent.tsx:152
-msgid "Method"
-msgstr ""
-
 #: src/pages/Index/Settings/AccountSettings/SecurityContent.tsx:195
 msgid "Error while updating email"
 msgstr ""
@@ -8337,12 +8739,12 @@ msgid "Register these URLs with your SAML identity provider."
 msgstr ""
 
 #: src/pages/Index/Settings/AdminCenter/IdentityManagementPanel.tsx:533
-msgid "URL"
+#: src/tables/settings/BarcodeScanHistoryTable.tsx:85
+msgid "Endpoint"
 msgstr ""
 
 #: src/pages/Index/Settings/AdminCenter/IdentityManagementPanel.tsx:533
-#: src/tables/settings/BarcodeScanHistoryTable.tsx:85
-msgid "Endpoint"
+msgid "URL"
 msgstr ""
 
 #: src/pages/Index/Settings/AdminCenter/IdentityManagementPanel.tsx:535
@@ -8745,10 +9147,6 @@ msgstr ""
 #: src/pages/Index/Settings/AdminCenter/TemplateManagementPanel.tsx:76
 #~ msgid "Build line"
 #~ msgstr "Build line"
-
-#: src/pages/Index/Settings/AdminCenter/TemplateManagementPanel.tsx:88
-#~ msgid "Reports"
-#~ msgstr "Reports"
 
 #: src/pages/Index/Settings/AdminCenter/TemplateManagementPanel.tsx:99
 #~ msgid "Purchase order"
@@ -9191,11 +9589,11 @@ msgstr "Väline"
 #: src/pages/purchasing/PurchasingIndex.tsx:103
 #: src/pages/purchasing/PurchasingIndex.tsx:130
 #: src/pages/purchasing/PurchasingIndex.tsx:159
-#: src/pages/purchasing/PurchasingIndex.tsx:180
-#: src/pages/purchasing/PurchasingIndex.tsx:209
-#: src/pages/sales/SalesIndex.tsx:117
-#: src/pages/sales/SalesIndex.tsx:158
-#: src/pages/sales/SalesIndex.tsx:185
+#: src/pages/purchasing/PurchasingIndex.tsx:182
+#: src/pages/purchasing/PurchasingIndex.tsx:213
+#: src/pages/sales/SalesIndex.tsx:118
+#: src/pages/sales/SalesIndex.tsx:159
+#: src/pages/sales/SalesIndex.tsx:186
 #: src/pages/stock/LocationDetail.tsx:139
 #: src/pages/stock/LocationDetail.tsx:179
 msgid "Table View"
@@ -9203,8 +9601,8 @@ msgstr "Tabelivaade"
 
 #: src/pages/build/BuildIndex.tsx:100
 #: src/pages/purchasing/PurchasingIndex.tsx:109
-#: src/pages/sales/SalesIndex.tsx:123
-#: src/pages/sales/SalesIndex.tsx:164
+#: src/pages/sales/SalesIndex.tsx:124
+#: src/pages/sales/SalesIndex.tsx:165
 #: src/pages/stock/LocationDetail.tsx:185
 msgid "Calendar View"
 msgstr "Kalendrivaade"
@@ -9214,11 +9612,11 @@ msgstr "Kalendrivaade"
 #: src/pages/purchasing/PurchasingIndex.tsx:115
 #: src/pages/purchasing/PurchasingIndex.tsx:142
 #: src/pages/purchasing/PurchasingIndex.tsx:165
-#: src/pages/purchasing/PurchasingIndex.tsx:192
-#: src/pages/purchasing/PurchasingIndex.tsx:215
-#: src/pages/sales/SalesIndex.tsx:129
-#: src/pages/sales/SalesIndex.tsx:170
-#: src/pages/sales/SalesIndex.tsx:197
+#: src/pages/purchasing/PurchasingIndex.tsx:194
+#: src/pages/purchasing/PurchasingIndex.tsx:219
+#: src/pages/sales/SalesIndex.tsx:130
+#: src/pages/sales/SalesIndex.tsx:171
+#: src/pages/sales/SalesIndex.tsx:198
 #: src/pages/stock/LocationDetail.tsx:145
 #: src/pages/stock/LocationDetail.tsx:191
 msgid "Parametric View"
@@ -9274,19 +9672,19 @@ msgstr ""
 msgid "Completed"
 msgstr ""
 
-#: src/pages/company/CompanyDetail.tsx:103
+#: src/pages/company/CompanyDetail.tsx:105
 msgid "Company Details"
 msgstr "Ettevõtte andmed"
 
-#: src/pages/company/CompanyDetail.tsx:109
+#: src/pages/company/CompanyDetail.tsx:111
 msgid "Supplied Parts"
 msgstr ""
 
-#: src/pages/company/CompanyDetail.tsx:118
+#: src/pages/company/CompanyDetail.tsx:120
 msgid "Manufactured Parts"
 msgstr ""
 
-#: src/pages/company/CompanyDetail.tsx:172
+#: src/pages/company/CompanyDetail.tsx:174
 msgid "Assigned Stock"
 msgstr ""
 
@@ -9298,20 +9696,20 @@ msgstr ""
 #~ msgid "Delete company"
 #~ msgstr "Delete company"
 
-#: src/pages/company/CompanyDetail.tsx:221
+#: src/pages/company/CompanyDetail.tsx:232
 #: src/tables/company/CompanyTable.tsx:102
 msgid "Edit Company"
 msgstr "Muuda ettevõtet"
 
-#: src/pages/company/CompanyDetail.tsx:229
+#: src/pages/company/CompanyDetail.tsx:240
 msgid "Duplicate Company"
 msgstr ""
 
-#: src/pages/company/CompanyDetail.tsx:242
+#: src/pages/company/CompanyDetail.tsx:253
 msgid "Delete Company"
 msgstr "Kustuta ettevõte"
 
-#: src/pages/company/CompanyDetail.tsx:257
+#: src/pages/company/CompanyDetail.tsx:268
 msgid "Company Actions"
 msgstr "Ettevõtte toimingud"
 
@@ -9330,24 +9728,6 @@ msgstr ""
 #: src/pages/company/CompanyDetailsPanel.tsx:67
 msgid "Default Currency"
 msgstr "Vaikimisi valuuta"
-
-#: src/pages/company/CompanyDetailsPanel.tsx:84
-#: src/pages/company/CustomerDetail.tsx:8
-#: src/pages/part/pricing/SaleHistoryPanel.tsx:32
-#: src/pages/sales/ReturnOrderDetailsPanel.tsx:60
-#: src/pages/sales/SalesOrderDetailsPanel.tsx:60
-#: src/pages/sales/SalesOrderShipmentDetailsPanel.tsx:66
-#: src/pages/stock/StockDetailsPanel.tsx:306
-#: src/tables/company/CompanyTable.tsx:126
-#: src/tables/part/PartSalesOrdersTable.tsx:51
-#: src/tables/sales/ReturnOrderParametricTable.tsx:25
-#: src/tables/sales/ReturnOrderTable.tsx:64
-#: src/tables/sales/SalesOrderParametricTable.tsx:25
-#: src/tables/sales/SalesOrderShipmentTable.tsx:124
-#: src/tables/sales/SalesOrderTable.tsx:87
-#: src/tables/stock/StockTrackingTable.tsx:197
-msgid "Customer"
-msgstr "Klient"
 
 #: src/pages/company/ManufacturerPartDetail.tsx:71
 msgid "Manufacturer Part Details"
@@ -10183,9 +10563,9 @@ msgid "Purchase Pricing"
 msgstr ""
 
 #: src/pages/part/pricing/PricingOverviewPanel.tsx:294
-#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:214
-#: src/pages/sales/ReturnOrderDetailsPanel.tsx:226
-#: src/pages/sales/SalesOrderDetailsPanel.tsx:226
+#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:222
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:234
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:234
 #: src/pages/stock/StockDetailsPanel.tsx:364
 #: src/tables/general/ParameterTable.tsx:101
 #: src/tables/general/ParametricDataTable.tsx:101
@@ -10289,6 +10669,7 @@ msgstr "Tellimuse andmed"
 #: src/pages/sales/ReturnOrderDetailsPanel.tsx:91
 #: src/pages/sales/SalesOrderDetail.tsx:154
 #: src/pages/sales/SalesOrderDetail.tsx:163
+#: src/pages/stationery/InvoiceDetailPage.tsx:153
 #: src/pages/stock/TransferOrderDetail.tsx:112
 #: src/pages/stock/TransferOrderDetailsPanel.tsx:74
 msgid "Line Items"
@@ -10375,9 +10756,9 @@ msgstr "Kontakti e-post"
 msgid "Contact Phone"
 msgstr "Kontakttelefon"
 
-#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:182
-#: src/pages/sales/ReturnOrderDetailsPanel.tsx:195
-#: src/pages/sales/SalesOrderDetailsPanel.tsx:196
+#: src/pages/purchasing/PurchaseOrderDetailsPanel.tsx:190
+#: src/pages/sales/ReturnOrderDetailsPanel.tsx:203
+#: src/pages/sales/SalesOrderDetailsPanel.tsx:204
 #: src/pages/stock/TransferOrderDetailsPanel.tsx:125
 msgid "Issue Date"
 msgstr "Väljastamise kuupäev"
@@ -10585,6 +10966,110 @@ msgstr ""
 #: src/pages/sales/SalesOrderShipmentDetailsPanel.tsx:160
 #: src/tables/sales/SalesOrderShipmentTable.tsx:190
 msgid "Delivery Date"
+msgstr ""
+
+#: src/pages/stationery/GiftReportPage.tsx:59
+msgid "Gift Report"
+msgstr ""
+
+#: src/pages/stationery/GiftReportPage.tsx:70
+#: src/pages/stationery/SalesReportPage.tsx:77
+#: src/tables/part/PartPurchaseOrdersTable.tsx:88
+#: src/tables/purchasing/PurchaseOrderLineItemTable.tsx:205
+msgid "Total Quantity"
+msgstr "Kogus kokku"
+
+#: src/pages/stationery/GiftReportPage.tsx:74
+msgid "Total Value"
+msgstr ""
+
+#: src/pages/stationery/GiftReportPage.tsx:80
+msgid "Breakdown by Part"
+msgstr ""
+
+#: src/pages/stationery/InvoiceDetailPage.tsx:98
+msgid "Invoice not found"
+msgstr ""
+
+#: src/pages/stationery/InvoiceDetailPage.tsx:143
+msgid "View Customer"
+msgstr ""
+
+#: src/pages/stationery/InvoiceDetailPage.tsx:147
+#: src/tables/stationery/InvoiceTable.tsx:68
+msgid "Invoice Date"
+msgstr ""
+
+#: src/pages/stationery/InvoiceDetailPage.tsx:161
+msgid "Line Total"
+msgstr ""
+
+#: src/pages/stationery/InvoiceDetailPage.tsx:179
+msgid "Payment History"
+msgstr ""
+
+#: src/pages/stationery/ReceivablesReportPage.tsx:70
+msgid "Receivables Report"
+msgstr ""
+
+#: src/pages/stationery/ReceivablesReportPage.tsx:80
+msgid "Total Invoiced"
+msgstr ""
+
+#: src/pages/stationery/ReceivablesReportPage.tsx:84
+msgid "Total Collected"
+msgstr ""
+
+#: src/pages/stationery/ReceivablesReportPage.tsx:103
+#: src/tables/stationery/InvoiceTable.tsx:90
+msgid "Aging"
+msgstr ""
+
+#: src/pages/stationery/ReceivablesReportPage.tsx:109
+msgid "Bucket"
+msgstr ""
+
+#: src/pages/stationery/ReceivablesReportPage.tsx:110
+msgid "Invoice Count"
+msgstr ""
+
+#: src/pages/stationery/ReceivablesReportPage.tsx:132
+msgid "Outstanding by Customer"
+msgstr ""
+
+#: src/pages/stationery/SalesReportPage.tsx:32
+msgid "B2C Cash"
+msgstr ""
+
+#: src/pages/stationery/SalesReportPage.tsx:33
+msgid "B2C Online"
+msgstr ""
+
+#: src/pages/stationery/SalesReportPage.tsx:63
+msgid "Sales Report"
+msgstr ""
+
+#: src/pages/stationery/SalesReportPage.tsx:73
+#: src/pages/stationery/SalesReportPage.tsx:99
+msgid "Transactions"
+msgstr ""
+
+#: src/pages/stationery/SalesReportPage.tsx:81
+#: src/pages/stationery/SalesReportPage.tsx:101
+msgid "Transaction Value"
+msgstr ""
+
+#: src/pages/stationery/SalesReportPage.tsx:85
+#: src/pages/stationery/SalesReportPage.tsx:102
+msgid "Collected Value"
+msgstr ""
+
+#: src/pages/stationery/SalesReportPage.tsx:92
+msgid "Breakdown by Sale Type"
+msgstr ""
+
+#: src/pages/stationery/SalesReportPage.tsx:98
+msgid "Sale Type"
 msgstr ""
 
 #: src/pages/stock/LocationDetail.tsx:124
@@ -12402,11 +12887,6 @@ msgstr ""
 #~ msgid "Add parameter template"
 #~ msgstr "Add parameter template"
 
-#: src/tables/part/PartPurchaseOrdersTable.tsx:88
-#: src/tables/purchasing/PurchaseOrderLineItemTable.tsx:205
-msgid "Total Quantity"
-msgstr "Kogus kokku"
-
 #: src/tables/part/PartPurchaseOrdersTable.tsx:132
 msgid "Show pending orders"
 msgstr "Näita ootel tellimusi"
@@ -13508,10 +13988,6 @@ msgstr ""
 msgid "Subject"
 msgstr "Teema"
 
-#: src/tables/settings/EmailTable.tsx:85
-msgid "To"
-msgstr "Saaja"
-
 #: src/tables/settings/EmailTable.tsx:90
 msgid "Sender"
 msgstr "Saatja"
@@ -14000,6 +14476,14 @@ msgstr "Kasutaja on uuendatud"
 msgid "Error updating user"
 msgstr "Tõrge kasutaja uuendamisel"
 
+#: src/tables/stationery/InvoiceTable.tsx:103
+msgid "No invoices found"
+msgstr ""
+
+#: src/tables/stationery/PaymentHistoryTable.tsx:52
+msgid "No payments recorded yet"
+msgstr ""
+
 #: src/tables/stock/InstalledItemsTable.tsx:42
 #: src/tables/stock/InstalledItemsTable.tsx:87
 msgid "Install Item"
@@ -14374,11 +14858,6 @@ msgstr ""
 msgid "No user information"
 msgstr "Kasutajateave puudub"
 
-#: src/tables/stock/TestStatisticsTable.tsx:34
-#: src/tables/stock/TestStatisticsTable.tsx:64
-#~ msgid "Total"
-#~ msgstr "Total"
-
 #: src/tables/stock/TransferOrderFilters.tsx:58
 msgid "Show orders with a target date"
 msgstr ""
@@ -14410,4 +14889,3 @@ msgstr "Loe dokumente"
 #: src/views/MobileAppView.tsx:42
 msgid "Ignore and continue to Desktop view"
 msgstr "Eira ja jätka töölaua vaates"
-
