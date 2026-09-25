@@ -56,7 +56,7 @@ jobs:
           command_timeout: 15m
           script: |
             set -e
-            cd /home/zunkireelabs/devprojects/inventory-app-prod
+            cd /root/devprojects/inventory-app-prod
             git fetch --all --prune
             git checkout -B main origin/main
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
