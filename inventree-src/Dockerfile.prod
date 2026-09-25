@@ -108,6 +108,10 @@ ENV INVENTREE_COMMIT_DATE="${commit_date}"
 COPY src/backend/InvenTree ${INVENTREE_BACKEND_DIR}/InvenTree
 COPY src/backend/requirements.txt ${INVENTREE_BACKEND_DIR}/requirements.txt
 
+# gitignored upstream (local-plugin-dev scaffold dir) — must exist as an importable package
+RUN mkdir -p ${INVENTREE_BACKEND_DIR}/InvenTree/plugins && \
+    printf '"""Directory for custom plugin development."""\n' > ${INVENTREE_BACKEND_DIR}/InvenTree/plugins/__init__.py
+
 ENV PATH=/root/.local/bin:$PATH
 
 COPY --from=builder_stage ${INVENTREE_BACKEND_DIR}/InvenTree/web/static/web ${INVENTREE_BACKEND_DIR}/InvenTree/web/static/web
