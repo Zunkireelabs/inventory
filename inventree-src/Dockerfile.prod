@@ -122,4 +122,4 @@ RUN bash -c "cd '${INVENTREE_HOME}' && invoke int.backend-compilemessages"
 RUN pip-licenses --format=json --with-license-file --no-license-path > "${INVENTREE_BACKEND_DIR}/InvenTree/InvenTree/licenses.txt" \
     && test -s "${INVENTREE_BACKEND_DIR}/InvenTree/InvenTree/licenses.txt"
 
-CMD ["sh", "-c", "exec gunicorn -c ./gunicorn.conf.py InvenTree.wsgi -b ${INVENTREE_WEB_ADDR}:${INVENTREE_WEB_PORT} --chdir ${INVENTREE_BACKEND_DIR}/InvenTree"]
+CMD ["sh", "-c", "cd ${INVENTREE_BACKEND_DIR}/InvenTree && python3 manage.py collectstatic --no-input --verbosity 0 && cd ${INVENTREE_HOME} && exec gunicorn -c ./gunicorn.conf.py InvenTree.wsgi -b ${INVENTREE_WEB_ADDR}:${INVENTREE_WEB_PORT} --chdir ${INVENTREE_BACKEND_DIR}/InvenTree"]
