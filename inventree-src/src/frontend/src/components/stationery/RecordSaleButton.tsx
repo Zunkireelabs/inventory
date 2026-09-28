@@ -1,5 +1,6 @@
 import { t } from '@lingui/core/macro';
 import {
+  ActionIcon,
   Alert,
   Button,
   Divider,
@@ -19,7 +20,9 @@ import {
   IconCash,
   IconCircleCheck,
   IconGift,
+  IconPlus,
   IconReceipt2,
+  IconTrash,
   IconWorld
 } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
@@ -67,16 +70,33 @@ const TYPE_OPTIONS: {
   }
 ];
 
+type LineItem = {
+  key: string;
+  stockItemId: number | null;
+  stockQty: number | null;
+  partName: string | null;
+  quantity: number | '';
+  unitValue: number | '';
+};
+
+function newLine(): LineItem {
+  return {
+    key: Math.random().toString(36).slice(2),
+    stockItemId: null,
+    stockQty: null,
+    partName: null,
+    quantity: '',
+    unitValue: ''
+  };
+}
+
+type MovementSummary = { partName: string; quantity: string; total: string };
+
 type SuccessState =
   | { kind: 'b2b'; reference: string; total: string; outstanding: string; invoiceId: number }
-  | { kind: 'movement'; saleType: SaleType; partName: string; quantity: string; total: string };
+  | { kind: 'movement'; saleType: SaleType; lines: MovementSummary[]; total: string };
 
 const INITIAL_FORM = {
-  stockItemId: null as number | null,
-  stockQty: null as number | null,
-  partName: null as string | null,
-  quantity: '' as number | '',
-  unitValue: '' as number | '',
   customerId: null as number | null,
   dueDate: null as string | null,
   notes: ''
@@ -84,13 +104,18 @@ const INITIAL_FORM = {
 
 /**
  * The primary "New Sale" workflow — one button, one modal, a large 4-way
- * type selector (not a dropdown), a contextual form, and a success state.
- * Built with plain Mantine inputs + a direct mutation rather than the
- * generic ApiForm wrapper: ApiForm is schema/OPTIONS-driven and meant for
- * CRUD-style forms, whereas this screen needs bespoke layout (live running
- * total, inline stock availability, type-conditional fields, a custom
- * success panel) that's simpler to build directly than to bend a generic
- * form renderer around.
+ * type selector (not a dropdown), a repeatable line-item cart (multiple
+ * products in one sale), and a success state. Built with plain Mantine
+ * inputs + a direct mutation rather than the generic ApiForm wrapper:
+ * ApiForm is schema/OPTIONS-driven and meant for CRUD-style forms, whereas
+ * this screen needs bespoke layout (live running total, inline stock
+ * availability, type-conditional fields, a custom success panel) that's
+ * simpler to build directly than to bend a generic form renderer around.
+ *
+ * B2B credit sends all lines in one atomic request (one invoice, one
+ * InvoiceLineItem per line). Cash/Online/Gift have no grouping document —
+ * each line is its own independent stock movement, so those are recorded
+ * with one record-sale/ call per line, sequentially.
  */
 export default function RecordSaleButton({
   onSuccess,
@@ -100,6 +125,7 @@ export default function RecordSaleButton({
   const isMobile = useMediaQuery('(max-width: 48em)');
   const [opened, setOpened] = useState(false);
   const [saleType, setSaleType] = useState<SaleType>('b2c_cash');
+  const [lines, setLines] = useState<LineItem[]>([newLine()]);
   const [form, setForm] = useState(INITIAL_FORM);
   const [success, setSuccess] = useState<SuccessState | null>(null);
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
@@ -107,45 +133,65 @@ export default function RecordSaleButton({
   const isB2B = saleType === 'b2b_credit';
   const isGift = saleType === 'gift';
 
-  const quantityNum = typeof form.quantity === 'number' ? form.quantity : 0;
-  const unitValueNum = typeof form.unitValue === 'number' ? form.unitValue : 0;
-  const runningTotal = quantityNum * unitValueNum;
+  const updateLine = (key: string, patch: Partial<LineItem>) => {
+    setLines((ls) => ls.map((l) => (l.key === key ? { ...l, ...patch } : l)));
+  };
 
-  const canSubmit =
-    !!form.stockItemId &&
-    quantityNum > 0 &&
-    unitValueNum > 0 &&
-    (!isB2B || !!form.customerId);
+  const removeLine = (key: string) => {
+    setLines((ls) => (ls.length > 1 ? ls.filter((l) => l.key !== key) : ls));
+  };
+
+  const lineTotal = (l: LineItem) =>
+    (typeof l.quantity === 'number' ? l.quantity : 0) *
+    (typeof l.unitValue === 'number' ? l.unitValue : 0);
+
+  const runningTotal = lines.reduce((sum, l) => sum + lineTotal(l), 0);
+
+  const linesValid = lines.every(
+    (l) =>
+      !!l.stockItemId &&
+      typeof l.quantity === 'number' &&
+      l.quantity > 0 &&
+      typeof l.unitValue === 'number' &&
+      l.unitValue > 0
+  );
+
+  const canSubmit = linesValid && (!isB2B || !!form.customerId);
 
   const mutation = useMutation({
     mutationFn: async () => {
       setErrorDetail(null);
+
       if (isB2B) {
-        const response = await api.post(
-          '/plugin/stationerysales/record-b2b-sale/',
-          {
-            stock_item_id: form.stockItemId,
-            quantity: form.quantity,
-            unit_value: form.unitValue || 0,
-            customer_id: form.customerId,
-            due_date: form.dueDate || undefined,
-            notes: form.notes
-          }
-        );
+        const response = await api.post('/plugin/stationerysales/record-b2b-sale/', {
+          items: lines.map((l) => ({
+            stock_item_id: l.stockItemId,
+            quantity: l.quantity,
+            unit_value: l.unitValue || 0
+          })),
+          customer_id: form.customerId,
+          due_date: form.dueDate || undefined,
+          notes: form.notes
+        });
         return { kind: 'b2b' as const, data: response.data };
       }
 
-      const response = await api.post(
-        '/plugin/stationerysales/record-sale/',
-        {
-          stock_item_id: form.stockItemId,
+      const summaries: MovementSummary[] = [];
+      for (const l of lines) {
+        await api.post('/plugin/stationerysales/record-sale/', {
+          stock_item_id: l.stockItemId,
           sale_type: saleType,
-          quantity: form.quantity,
-          unit_value: form.unitValue || 0,
+          quantity: l.quantity,
+          unit_value: l.unitValue || 0,
           notes: form.notes
-        }
-      );
-      return { kind: 'movement' as const, data: response.data };
+        });
+        summaries.push({
+          partName: l.partName ?? '',
+          quantity: String(l.quantity),
+          total: String(lineTotal(l))
+        });
+      }
+      return { kind: 'movement' as const, summaries };
     },
     onSuccess: (result) => {
       if (result.kind === 'b2b') {
@@ -160,8 +206,7 @@ export default function RecordSaleButton({
         setSuccess({
           kind: 'movement',
           saleType,
-          partName: form.partName ?? '',
-          quantity: String(form.quantity),
+          lines: result.summaries,
           total: String(runningTotal)
         });
       }
@@ -175,6 +220,7 @@ export default function RecordSaleButton({
   });
 
   const resetForNewSale = () => {
+    setLines([newLine()]);
     setForm(INITIAL_FORM);
     setSuccess(null);
     setErrorDetail(null);
@@ -227,9 +273,15 @@ export default function RecordSaleButton({
                     {t`Sale recorded`}
                   </Text>
                 </Group>
-                <Text c='dimmed'>
-                  {success.partName} × {success.quantity} — {t`Total`}:{' '}
-                  {formatMoney(success.total)}
+                <Stack gap={0} align='center'>
+                  {success.lines.map((l, i) => (
+                    <Text key={i} c='dimmed' size='sm'>
+                      {l.partName} × {l.quantity} — {formatMoney(l.total)}
+                    </Text>
+                  ))}
+                </Stack>
+                <Text fw={600}>
+                  {t`Total`}: {formatMoney(success.total)}
                 </Text>
               </Stack>
             )}
@@ -280,32 +332,63 @@ export default function RecordSaleButton({
               />
             )}
 
-            <ProductPicker
-              value={form.stockItemId}
-              onChange={(stockItemId, stockQty, partName) =>
-                setForm((f) => ({ ...f, stockItemId, stockQty, partName }))
-              }
-            />
-            <StockAvailabilityHint quantity={form.stockQty} />
+            <Stack gap='md'>
+              {lines.map((line, index) => (
+                <Stack key={line.key} gap='xs'>
+                  {lines.length > 1 && (
+                    <Group justify='space-between'>
+                      <Text size='xs' c='dimmed' fw={700}>
+                        {t`Product`} {index + 1}
+                      </Text>
+                      <ActionIcon
+                        color='red'
+                        variant='subtle'
+                        size='sm'
+                        onClick={() => removeLine(line.key)}
+                        aria-label={t`Remove product`}
+                      >
+                        <IconTrash size={14} />
+                      </ActionIcon>
+                    </Group>
+                  )}
+                  <ProductPicker
+                    value={line.stockItemId}
+                    onChange={(stockItemId, stockQty, partName) =>
+                      updateLine(line.key, { stockItemId, stockQty, partName })
+                    }
+                  />
+                  <StockAvailabilityHint quantity={line.stockQty} />
+                  <SimpleGrid cols={{ base: 1, xs: 2 }}>
+                    <NumberInput
+                      label={t`Quantity`}
+                      value={line.quantity}
+                      onChange={(v) => updateLine(line.key, { quantity: v as number })}
+                      min={0}
+                      required
+                    />
+                    <NumberInput
+                      label={isGift ? t`Gift Value` : t`Unit Value`}
+                      value={line.unitValue}
+                      onChange={(v) => updateLine(line.key, { unitValue: v as number })}
+                      min={0}
+                      decimalScale={2}
+                      required
+                      description={isGift ? t`Required for gifts` : undefined}
+                    />
+                  </SimpleGrid>
+                  {index < lines.length - 1 && <Divider variant='dashed' />}
+                </Stack>
+              ))}
 
-            <SimpleGrid cols={{ base: 1, xs: 2 }}>
-              <NumberInput
-                label={t`Quantity`}
-                value={form.quantity}
-                onChange={(v) => setForm((f) => ({ ...f, quantity: v as number }))}
-                min={0}
-                required
-              />
-              <NumberInput
-                label={isGift ? t`Gift Value` : t`Unit Value`}
-                value={form.unitValue}
-                onChange={(v) => setForm((f) => ({ ...f, unitValue: v as number }))}
-                min={0}
-                decimalScale={2}
-                required
-                description={isGift ? t`Required for gifts` : undefined}
-              />
-            </SimpleGrid>
+              <Button
+                variant='subtle'
+                size='sm'
+                leftSection={<IconPlus size={16} />}
+                onClick={() => setLines((ls) => [...ls, newLine()])}
+              >
+                {t`Add Product`}
+              </Button>
+            </Stack>
 
             {isB2B && (
               <DateInput

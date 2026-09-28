@@ -134,13 +134,70 @@ class RecordSaleView(APIView):
 DEFAULT_DUE_DAYS = 30
 
 
-class RecordB2BSaleView(APIView):
-    """POST body: stock_item_id, quantity, unit_value, customer_id
-    (required, must be an is_customer=True Company), due_date (optional,
-    ISO date string; defaults to today + 30 days), notes (optional).
+def _parse_line_items(raw_items):
+    """Validate and parse the `items` array shared by RecordB2BSaleView.
 
-    Atomically: reduces stock, creates the b2b_credit SaleTypeMovement,
-    creates the Invoice, creates the InvoiceLineItem. All-or-nothing.
+    Returns (parsed_items, error_response). parsed_items is a list of dicts
+    with keys stock_item (StockItem instance), quantity (Decimal),
+    unit_value (Decimal). error_response is None on success.
+    """
+    if not isinstance(raw_items, list) or not raw_items:
+        return None, Response(
+            {'detail': 'items must be a non-empty array'}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    parsed = []
+    for raw in raw_items:
+        try:
+            stock_item = StockItem.objects.get(pk=raw.get('stock_item_id'))
+        except (StockItem.DoesNotExist, ValueError, TypeError, AttributeError):
+            return None, Response(
+                {'detail': 'Each item requires a valid stock_item_id'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            quantity = Decimal(str(raw.get('quantity')))
+            if quantity <= 0:
+                raise InvalidOperation
+        except (InvalidOperation, TypeError):
+            return None, Response(
+                {'detail': 'Each item requires a positive quantity'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            unit_value = Decimal(str(raw.get('unit_value', 0)))
+        except InvalidOperation:
+            return None, Response(
+                {'detail': 'Invalid unit_value'}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if stock_item.quantity < quantity:
+            return None, Response(
+                {'detail': f'Insufficient stock for {stock_item.part.name}'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        parsed.append({
+            'stock_item': stock_item,
+            'quantity': quantity,
+            'unit_value': unit_value,
+        })
+
+    return parsed, None
+
+
+class RecordB2BSaleView(APIView):
+    """POST body: items (required, non-empty array of {stock_item_id,
+    quantity, unit_value}), customer_id (required, must be an
+    is_customer=True Company), due_date (optional, ISO date string;
+    defaults to today + 30 days), notes (optional, applied to every line's
+    underlying stock movement).
+
+    Atomically: reduces stock and creates a b2b_credit SaleTypeMovement for
+    every item, creates one Invoice, creates one InvoiceLineItem per
+    movement. All-or-nothing across every line.
     """
 
     permission_classes = [IsAuthenticated]
@@ -148,27 +205,9 @@ class RecordB2BSaleView(APIView):
     def post(self, request):
         data = request.data
 
-        try:
-            stock_item = StockItem.objects.get(pk=data.get('stock_item_id'))
-        except (StockItem.DoesNotExist, ValueError, TypeError):
-            return Response(
-                {'detail': 'stock_item_id is required and must reference an existing stock item'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            quantity = Decimal(str(data.get('quantity')))
-            if quantity <= 0:
-                raise InvalidOperation
-        except (InvalidOperation, TypeError):
-            return Response(
-                {'detail': 'quantity must be a positive number'}, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            unit_value = Decimal(str(data.get('unit_value', 0)))
-        except InvalidOperation:
-            return Response({'detail': 'Invalid unit_value'}, status=status.HTTP_400_BAD_REQUEST)
+        items, error = _parse_line_items(data.get('items'))
+        if error:
+            return error
 
         customer_id = data.get('customer_id')
         if not customer_id:
@@ -187,29 +226,31 @@ class RecordB2BSaleView(APIView):
         else:
             due_date = timezone.localdate() + timedelta(days=DEFAULT_DUE_DAYS)
 
-        if stock_item.quantity < quantity:
-            return Response(
-                {'detail': 'Insufficient stock for this movement'}, status=status.HTTP_400_BAD_REQUEST
-            )
+        notes = data.get('notes', '')
 
         try:
             with transaction.atomic():
-                movement = record_sale_movement(
-                    stock_item=stock_item,
-                    sale_type=SaleTypeMovement.SaleType.B2B_CREDIT,
-                    quantity=quantity,
-                    unit_value=unit_value,
-                    customer=customer,
-                    user=request.user,
-                    notes=data.get('notes', ''),
-                )
+                movements = [
+                    record_sale_movement(
+                        stock_item=item['stock_item'],
+                        sale_type=SaleTypeMovement.SaleType.B2B_CREDIT,
+                        quantity=item['quantity'],
+                        unit_value=item['unit_value'],
+                        customer=customer,
+                        user=request.user,
+                        notes=notes,
+                    )
+                    for item in items
+                ]
                 invoice = Invoice.objects.create(
                     customer=customer,
                     due_date=due_date,
-                    total=movement.total_value,
+                    total=sum((m.total_value for m in movements), Decimal('0')),
                     created_by=request.user,
                 )
-                InvoiceLineItem.objects.create(invoice=invoice, sale_type_movement=movement)
+                InvoiceLineItem.objects.bulk_create([
+                    InvoiceLineItem(invoice=invoice, sale_type_movement=m) for m in movements
+                ])
         except SaleRecordingError:
             return Response({'detail': 'Stock update failed'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -220,7 +261,7 @@ class RecordB2BSaleView(APIView):
                 'total': str(invoice.total),
                 'outstanding': str(invoice.outstanding),
                 'status': invoice.status,
-                'sale_type_movement_id': movement.id,
+                'line_count': len(movements),
             },
             status=status.HTTP_201_CREATED,
         )

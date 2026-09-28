@@ -144,9 +144,9 @@ class RecordB2BSaleApiTest(APITestCase):
         response = self.client.post(
             self.url,
             {
-                'stock_item_id': self.stock_item.pk,
-                'quantity': '5',
-                'unit_value': '100.00',
+                'items': [
+                    {'stock_item_id': self.stock_item.pk, 'quantity': '5', 'unit_value': '100.00'},
+                ],
                 'customer_id': self.customer.pk,
             },
             format='json',
@@ -165,10 +165,71 @@ class RecordB2BSaleApiTest(APITestCase):
         self.assertEqual(line.sale_type_movement.sale_type, 'b2b_credit')
         self.assertEqual(line.quantity, Decimal('5'))
 
+    def test_multi_line_b2b_sale_creates_one_invoice_with_multiple_lines(self):
+        second_part = Part.objects.create(
+            name='Test Pen', description='Test', active=True, purchaseable=True, salable=True
+        )
+        second_stock_item = StockItem.objects.create(part=second_part, quantity=20)
+
+        response = self.client.post(
+            self.url,
+            {
+                'items': [
+                    {'stock_item_id': self.stock_item.pk, 'quantity': '5', 'unit_value': '100.00'},
+                    {'stock_item_id': second_stock_item.pk, 'quantity': '2', 'unit_value': '50.00'},
+                ],
+                'customer_id': self.customer.pk,
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+
+        self.stock_item.refresh_from_db()
+        second_stock_item.refresh_from_db()
+        self.assertEqual(self.stock_item.quantity, 45)
+        self.assertEqual(second_stock_item.quantity, 18)
+
+        invoice = Invoice.objects.get(id=response.data['invoice_id'])
+        self.assertEqual(invoice.total, Decimal('600.00'))
+        self.assertEqual(invoice.lines.count(), 2)
+
+    def test_insufficient_stock_on_one_line_rolls_back_whole_sale(self):
+        second_part = Part.objects.create(
+            name='Test Pen', description='Test', active=True, purchaseable=True, salable=True
+        )
+        second_stock_item = StockItem.objects.create(part=second_part, quantity=20)
+
+        response = self.client.post(
+            self.url,
+            {
+                'items': [
+                    {'stock_item_id': self.stock_item.pk, 'quantity': '5', 'unit_value': '100.00'},
+                    {'stock_item_id': second_stock_item.pk, 'quantity': '999', 'unit_value': '50.00'},
+                ],
+                'customer_id': self.customer.pk,
+            },
+            format='json',
+        )
+        self.assertEqual(response.status_code, 400)
+        self.stock_item.refresh_from_db()
+        self.assertEqual(self.stock_item.quantity, 50)
+        self.assertEqual(Invoice.objects.count(), 0)
+
+    def test_empty_items_rejected(self):
+        response = self.client.post(
+            self.url,
+            {'items': [], 'customer_id': self.customer.pk},
+            format='json',
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_invalid_customer_rejected(self):
         response = self.client.post(
             self.url,
-            {'stock_item_id': self.stock_item.pk, 'quantity': '1', 'unit_value': '10', 'customer_id': 999999},
+            {
+                'items': [{'stock_item_id': self.stock_item.pk, 'quantity': '1', 'unit_value': '10'}],
+                'customer_id': 999999,
+            },
             format='json',
         )
         self.assertEqual(response.status_code, 400)
@@ -178,7 +239,10 @@ class RecordB2BSaleApiTest(APITestCase):
         supplier = Company.objects.create(name='Not A Customer', is_customer=False, is_supplier=True)
         response = self.client.post(
             self.url,
-            {'stock_item_id': self.stock_item.pk, 'quantity': '1', 'unit_value': '10', 'customer_id': supplier.pk},
+            {
+                'items': [{'stock_item_id': self.stock_item.pk, 'quantity': '1', 'unit_value': '10'}],
+                'customer_id': supplier.pk,
+            },
             format='json',
         )
         self.assertEqual(response.status_code, 400)
@@ -187,9 +251,7 @@ class RecordB2BSaleApiTest(APITestCase):
         response = self.client.post(
             self.url,
             {
-                'stock_item_id': self.stock_item.pk,
-                'quantity': '999',
-                'unit_value': '10',
+                'items': [{'stock_item_id': self.stock_item.pk, 'quantity': '999', 'unit_value': '10'}],
                 'customer_id': self.customer.pk,
             },
             format='json',
@@ -203,9 +265,7 @@ class RecordB2BSaleApiTest(APITestCase):
         response = self.client.post(
             self.url,
             {
-                'stock_item_id': self.stock_item.pk,
-                'quantity': '1',
-                'unit_value': '10',
+                'items': [{'stock_item_id': self.stock_item.pk, 'quantity': '1', 'unit_value': '10'}],
                 'customer_id': self.customer.pk,
             },
             format='json',
