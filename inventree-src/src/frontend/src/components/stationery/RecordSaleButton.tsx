@@ -77,7 +77,7 @@ const INITIAL_FORM = {
   quantity: '' as number | '',
   unitValue: '' as number | '',
   customerId: null as number | null,
-  dueDate: null as Date | null,
+  dueDate: null as string | null,
   notes: ''
 };
 
@@ -127,9 +127,7 @@ export default function RecordSaleButton({
             quantity: form.quantity,
             unit_value: form.unitValue || 0,
             customer_id: form.customerId,
-            due_date: form.dueDate
-              ? form.dueDate.toISOString().slice(0, 10)
-              : undefined,
+            due_date: form.dueDate || undefined,
             notes: form.notes
           }
         );
@@ -313,7 +311,7 @@ export default function RecordSaleButton({
                 label={t`Due Date`}
                 placeholder={t`Defaults to 30 days from today`}
                 value={form.dueDate}
-                onChange={(v) => setForm((f) => ({ ...f, dueDate: v as unknown as Date | null }))}
+                onChange={(v) => setForm((f) => ({ ...f, dueDate: v }))}
                 clearable
               />
             )}
