@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../../App';
 import type { InvoiceRow } from '../../tables/stationery/InvoiceTable';
 import { InvoiceTable } from '../../tables/stationery/InvoiceTable';
+import { formatMoney } from './format';
 import { StatCard } from './StatCard';
 
 type CustomerReceivablesResponse = {
@@ -61,7 +62,7 @@ export function CustomerReceivablesPanel({
       <SimpleGrid cols={{ base: 1, xs: 2 }}>
         <StatCard
           label={t`Total Outstanding`}
-          value={data?.total_outstanding ?? '-'}
+          value={data ? formatMoney(data.total_outstanding) : '-'}
           color='red'
         />
         <StatCard

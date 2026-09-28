@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 
 import { api } from '../../App';
+import { formatMoney, formatQty } from '../../components/stationery/format';
 import { StatCard } from '../../components/stationery/StatCard';
 import {
   ReportDateRangeFilter,
@@ -75,15 +76,15 @@ export default function SalesReportPage() {
         />
         <StatCard
           label={t`Total Quantity`}
-          value={data?.totals.total_quantity ?? '-'}
+          value={formatQty(data?.totals.total_quantity)}
         />
         <StatCard
           label={t`Transaction Value`}
-          value={data?.totals.transaction_value ?? '-'}
+          value={formatMoney(data?.totals.transaction_value)}
         />
         <StatCard
           label={t`Collected Value`}
-          value={data?.totals.collected_value ?? '-'}
+          value={formatMoney(data?.totals.collected_value)}
           color='green'
         />
       </SimpleGrid>
@@ -108,9 +109,9 @@ export default function SalesReportPage() {
                   <Table.Tr key={saleType}>
                     <Table.Td>{TYPE_LABEL[saleType] ?? saleType}</Table.Td>
                     <Table.Td>{row.transaction_count}</Table.Td>
-                    <Table.Td>{row.total_quantity}</Table.Td>
-                    <Table.Td>{row.transaction_value}</Table.Td>
-                    <Table.Td>{row.collected_value}</Table.Td>
+                    <Table.Td>{formatQty(row.total_quantity)}</Table.Td>
+                    <Table.Td>{formatMoney(row.transaction_value)}</Table.Td>
+                    <Table.Td>{formatMoney(row.collected_value)}</Table.Td>
                   </Table.Tr>
                 )
               )}

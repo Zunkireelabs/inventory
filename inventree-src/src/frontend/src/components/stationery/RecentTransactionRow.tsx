@@ -1,5 +1,6 @@
 import { Group, Stack, Text } from '@mantine/core';
 
+import { formatMoney } from './format';
 import { TransactionStatusBadge } from './TransactionStatusBadge';
 
 export type RecentTransaction = {
@@ -45,7 +46,7 @@ export function RecentTransactionRow({
       </Group>
       <Stack gap={0} align='flex-end'>
         <Text size='sm' fw={600}>
-          {transaction.total_value}
+          {formatMoney(transaction.total_value)}
         </Text>
         <Text size='xs' c='dimmed'>
           {timeAgo(transaction.created_at)}

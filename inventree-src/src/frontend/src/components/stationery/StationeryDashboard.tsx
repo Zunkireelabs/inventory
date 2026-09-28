@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { api } from '../../App';
 import { CustomerBalanceBadge } from './CustomerBalanceBadge';
+import { formatMoney } from './format';
 import { MetricCard } from './MetricCard';
 import ReceivePaymentButton from './ReceivePaymentButton';
 import RecordSaleButton from './RecordSaleButton';
@@ -116,14 +117,14 @@ export default function StationeryDashboard() {
       <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }}>
         <MetricCard
           label={t`Today's Sales`}
-          value={salesToday.isFetching ? '' : salesTotals?.transaction_value ?? '0'}
+          value={salesToday.isFetching ? '' : formatMoney(salesTotals?.transaction_value ?? '0')}
           loading={salesToday.isFetching}
           icon={<IconCoin size={20} />}
           color='blue'
         />
         <MetricCard
           label={t`Collected Today`}
-          value={salesToday.isFetching ? '' : salesTotals?.collected_value ?? '0'}
+          value={salesToday.isFetching ? '' : formatMoney(salesTotals?.collected_value ?? '0')}
           loading={salesToday.isFetching}
           icon={<IconCash size={20} />}
           color='green'
@@ -133,7 +134,7 @@ export default function StationeryDashboard() {
           value={
             receivables.isFetching
               ? ''
-              : receivables.data?.totals?.total_outstanding ?? '0'
+              : formatMoney(receivables.data?.totals?.total_outstanding ?? '0')
           }
           loading={receivables.isFetching}
           icon={<IconAlertTriangle size={20} />}
@@ -178,7 +179,7 @@ export default function StationeryDashboard() {
                   <Group justify='space-between'>
                     <Text size='sm'>{TYPE_LABEL[type] ?? type}</Text>
                     <Text size='sm' fw={600}>
-                      {row.transaction_value} ({row.transaction_count})
+                      {formatMoney(row.transaction_value)} ({row.transaction_count})
                     </Text>
                   </Group>
                   <Progress

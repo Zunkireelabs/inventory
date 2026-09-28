@@ -3,6 +3,7 @@ import { Anchor, Table } from '@mantine/core';
 import { DataTable, type DataTableColumn } from 'mantine-datatable';
 import { useNavigate } from 'react-router-dom';
 
+import { formatMoney } from '../../components/stationery/format';
 import { AgingBadge, InvoiceStatusBadge } from '../../components/stationery/InvoiceStatusBadge';
 
 export type InvoiceRow = {
@@ -73,12 +74,14 @@ export function InvoiceTable({
     {
       accessor: 'total',
       title: t`Total`,
-      textAlign: 'right'
+      textAlign: 'right',
+      render: (row) => formatMoney(row.total)
     },
     {
       accessor: 'outstanding',
       title: t`Outstanding`,
-      textAlign: 'right'
+      textAlign: 'right',
+      render: (row) => formatMoney(row.outstanding)
     },
     {
       accessor: 'status',

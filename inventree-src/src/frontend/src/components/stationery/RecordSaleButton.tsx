@@ -28,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { api } from '../../App';
 import { CustomerPicker } from './CustomerPicker';
+import { formatMoney } from './format';
 import { ProductPicker, StockAvailabilityHint } from './ProductPicker';
 import { TransactionStatusBadge } from './TransactionStatusBadge';
 import { TransactionTypeCard } from './TransactionTypeCard';
@@ -214,8 +215,8 @@ export default function RecordSaleButton({
                   {t`Invoice ${success.reference} created`}
                 </Text>
                 <Text c='dimmed'>
-                  {t`Total`}: {success.total} · {t`Outstanding`}:{' '}
-                  {success.outstanding}
+                  {t`Total`}: {formatMoney(success.total)} · {t`Outstanding`}:{' '}
+                  {formatMoney(success.outstanding)}
                 </Text>
               </Stack>
             ) : (
@@ -228,7 +229,7 @@ export default function RecordSaleButton({
                 </Group>
                 <Text c='dimmed'>
                   {success.partName} × {success.quantity} — {t`Total`}:{' '}
-                  {success.total}
+                  {formatMoney(success.total)}
                 </Text>
               </Stack>
             )}
@@ -333,7 +334,7 @@ export default function RecordSaleButton({
                 {t`Total`}
               </Text>
               <Text size='xl' fw={800}>
-                {runningTotal.toFixed(2)}
+                {formatMoney(runningTotal)}
               </Text>
             </Group>
 

@@ -2,6 +2,8 @@ import { t } from '@lingui/core/macro';
 import { Badge, Table } from '@mantine/core';
 import { DataTable, type DataTableColumn } from 'mantine-datatable';
 
+import { formatMoney } from '../../components/stationery/format';
+
 export type PaymentRow = {
   id: number;
   amount: string;
@@ -27,7 +29,8 @@ export function PaymentHistoryTable({
     {
       accessor: 'amount',
       title: t`Amount`,
-      textAlign: 'right'
+      textAlign: 'right',
+      render: (row) => formatMoney(row.amount)
     },
     {
       accessor: 'method',

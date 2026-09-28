@@ -1,5 +1,7 @@
 import { Badge } from '@mantine/core';
 
+import { formatMoney } from './format';
+
 /** Outstanding-balance badge for the dashboard's Outstanding Customers
  * list. Deliberately simple (amount only) — the full aging/urgency
  * breakdown belongs to the Receivables workspace (a later phase), not the
@@ -9,7 +11,7 @@ export function CustomerBalanceBadge({
 }: Readonly<{ amount: string }>) {
   return (
     <Badge color='red' variant='light' size='md'>
-      {amount}
+      {formatMoney(amount)}
     </Badge>
   );
 }

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { api } from '../../App';
 import { PageDetail } from '../../components/nav/PageDetail';
+import { formatMoney } from '../../components/stationery/format';
 import {
   ReportDateRangeFilter,
   formatDateParam
@@ -78,16 +79,16 @@ export default function ReceivablesReportPage() {
       <SimpleGrid cols={{ base: 1, xs: 2, sm: 3 }}>
         <StatCard
           label={t`Total Invoiced`}
-          value={data?.totals.total_invoiced ?? '-'}
+          value={formatMoney(data?.totals.total_invoiced)}
         />
         <StatCard
           label={t`Total Collected`}
-          value={data?.totals.total_collected ?? '-'}
+          value={formatMoney(data?.totals.total_collected)}
           color='green'
         />
         <StatCard
           label={t`Total Outstanding`}
-          value={data?.totals.total_outstanding ?? '-'}
+          value={formatMoney(data?.totals.total_outstanding)}
           color='red'
         />
         <StatCard label={t`Unpaid`} value={data?.totals.invoice_count.unpaid ?? '-'} />
@@ -118,7 +119,7 @@ export default function ReceivablesReportPage() {
                   <Table.Tr key={bucket}>
                     <Table.Td>{bucket}</Table.Td>
                     <Table.Td>{row?.invoice_count ?? 0}</Table.Td>
-                    <Table.Td>{row?.outstanding ?? '0'}</Table.Td>
+                    <Table.Td>{formatMoney(row?.outstanding ?? '0')}</Table.Td>
                   </Table.Tr>
                 );
               })}
@@ -150,7 +151,7 @@ export default function ReceivablesReportPage() {
                       {row.customer_name}
                     </Anchor>
                   </Table.Td>
-                  <Table.Td>{row.outstanding}</Table.Td>
+                  <Table.Td>{formatMoney(row.outstanding)}</Table.Td>
                 </Table.Tr>
               ))}
             </Table.Tbody>

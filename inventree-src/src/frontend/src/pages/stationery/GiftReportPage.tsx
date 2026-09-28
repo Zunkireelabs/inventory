@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react';
 
 import { api } from '../../App';
 import { PageDetail } from '../../components/nav/PageDetail';
+import { formatMoney, formatQty } from '../../components/stationery/format';
 import {
   ReportDateRangeFilter,
   formatDateParam
@@ -68,11 +69,11 @@ export default function GiftReportPage() {
         <StatCard label={t`Gifts`} value={data?.totals.gift_count ?? '-'} />
         <StatCard
           label={t`Total Quantity`}
-          value={data?.totals.total_quantity ?? '-'}
+          value={formatQty(data?.totals.total_quantity)}
         />
         <StatCard
           label={t`Total Value`}
-          value={data?.totals.total_value ?? '-'}
+          value={formatMoney(data?.totals.total_value)}
         />
       </SimpleGrid>
       <Paper withBorder p='md' radius='md'>
@@ -92,8 +93,8 @@ export default function GiftReportPage() {
               {(data?.by_part ?? []).map((row) => (
                 <Table.Tr key={row.part_id}>
                   <Table.Td>{row.part_name}</Table.Td>
-                  <Table.Td>{row.quantity}</Table.Td>
-                  <Table.Td>{row.value}</Table.Td>
+                  <Table.Td>{formatQty(row.quantity)}</Table.Td>
+                  <Table.Td>{formatMoney(row.value)}</Table.Td>
                 </Table.Tr>
               ))}
             </Table.Tbody>

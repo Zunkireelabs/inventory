@@ -16,6 +16,7 @@ import { useState } from 'react';
 
 import { api } from '../../App';
 import { CustomerPicker } from './CustomerPicker';
+import { formatMoney } from './format';
 
 const METHOD_OPTIONS = [
   { value: 'cash', label: t`Cash` },
@@ -89,7 +90,7 @@ export default function ReceivePaymentButton({
 
   const invoiceOptions = (invoicesQuery.data ?? []).map((inv) => ({
     value: String(inv.id),
-    label: `${inv.reference} — ${t`Outstanding`}: ${inv.outstanding}`
+    label: `${inv.reference} — ${t`Outstanding`}: ${formatMoney(inv.outstanding)}`
   }));
 
   return (

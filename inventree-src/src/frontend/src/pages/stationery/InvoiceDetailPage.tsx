@@ -16,6 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { api } from '../../App';
 import { PageDetail } from '../../components/nav/PageDetail';
+import { formatMoney, formatQty } from '../../components/stationery/format';
 import { AgingBadge, InvoiceStatusBadge } from '../../components/stationery/InvoiceStatusBadge';
 import { StatCard } from '../../components/stationery/StatCard';
 import { recordPaymentFields } from '../../forms/StationeryForms';
@@ -123,11 +124,15 @@ export default function InvoiceDetailPage() {
       </Group>
 
       <SimpleGrid cols={{ base: 1, xs: 2, sm: 4 }}>
-        <StatCard label={t`Total`} value={invoice.total} />
-        <StatCard label={t`Paid`} value={invoice.amount_paid} color='green' />
+        <StatCard label={t`Total`} value={formatMoney(invoice.total)} />
+        <StatCard
+          label={t`Paid`}
+          value={formatMoney(invoice.amount_paid)}
+          color='green'
+        />
         <StatCard
           label={t`Outstanding`}
-          value={invoice.outstanding}
+          value={formatMoney(invoice.outstanding)}
           color='red'
         />
         <StatCard label={t`Due Date`} value={invoice.due_date} />
@@ -164,9 +169,9 @@ export default function InvoiceDetailPage() {
             <Table.Tbody>
               {invoice.lines.map((line) => (
                 <Table.Tr key={line.id}>
-                  <Table.Td>{line.quantity}</Table.Td>
-                  <Table.Td>{line.unit_price}</Table.Td>
-                  <Table.Td>{line.line_total}</Table.Td>
+                  <Table.Td>{formatQty(line.quantity)}</Table.Td>
+                  <Table.Td>{formatMoney(line.unit_price)}</Table.Td>
+                  <Table.Td>{formatMoney(line.line_total)}</Table.Td>
                 </Table.Tr>
               ))}
             </Table.Tbody>
