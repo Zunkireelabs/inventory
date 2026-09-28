@@ -173,7 +173,7 @@ msgstr "Ne"
 #: src/pages/build/BuildOrderDetailsPanel.tsx:45
 #: src/pages/part/PartDetail.tsx:814
 #: src/pages/part/bom/BomCompare.tsx:203
-#: src/pages/stationery/GiftReportPage.tsx:86
+#: src/pages/stationery/GiftReportPage.tsx:87
 #: src/tables/build/BuildOrderParametricTable.tsx:29
 #: src/tables/part/PartTestResultTable.tsx:251
 #: src/tables/part/RelatedPartTable.tsx:53
@@ -1237,7 +1237,7 @@ msgid "Latest parts"
 msgstr ""
 
 #: src/components/dashboard/DashboardWidgetLibrary.tsx:64
-#: src/components/stationery/StationeryDashboard.tsx:140
+#: src/components/stationery/StationeryDashboard.tsx:144
 #: src/tables/part/PartTableFilters.tsx:79
 msgid "Low Stock"
 msgstr "Niske zalihe"
@@ -1814,8 +1814,8 @@ msgstr ""
 
 #: src/components/editors/NotesEditor.tsx:701
 #: src/components/panels/NotesPanel.tsx:24
-#: src/components/stationery/RecordSaleButton.tsx:316
-#: src/components/stationery/RestockButton.tsx:96
+#: src/components/stationery/RecordSaleButton.tsx:404
+#: src/components/stationery/RestockButton.tsx:102
 #: src/forms/StationeryForms.tsx:56
 #: src/forms/StationeryForms.tsx:104
 #: src/forms/StockForms.tsx:1585
@@ -2409,7 +2409,7 @@ msgid "Select..."
 msgstr ""
 
 #: src/components/forms/fields/TreeField.tsx:414
-#: src/components/stationery/ReceivePaymentButton.tsx:128
+#: src/components/stationery/ReceivePaymentButton.tsx:135
 #: src/components/wizards/ImportPartWizard.tsx:221
 #: src/forms/StockForms.tsx:1306
 msgid "Loading..."
@@ -3484,7 +3484,7 @@ msgstr "Autor"
 #: src/pages/part/pricing/PurchaseHistoryPanel.tsx:42
 #: src/pages/part/pricing/SaleHistoryPanel.tsx:39
 #: src/tables/part/PartTestResultTable.tsx:226
-#: src/tables/stationery/PaymentHistoryTable.tsx:26
+#: src/tables/stationery/PaymentHistoryTable.tsx:28
 msgid "Date"
 msgstr "Datum"
 
@@ -3749,7 +3749,7 @@ msgid "Serial Number"
 msgstr "Serijski broj"
 
 #: src/components/render/Stock.tsx:100
-#: src/components/stationery/RecordSaleButton.tsx:288
+#: src/components/stationery/RecordSaleButton.tsx:363
 #: src/components/wizards/OrderPartsWizard.tsx:389
 #: src/forms/BomForms.tsx:42
 #: src/forms/BuildForms.tsx:284
@@ -3773,9 +3773,9 @@ msgstr "Serijski broj"
 #: src/pages/part/pricing/BomPricingPanel.tsx:113
 #: src/pages/part/pricing/PriceBreakPanel.tsx:89
 #: src/pages/part/pricing/PriceBreakPanel.tsx:173
-#: src/pages/stationery/GiftReportPage.tsx:87
-#: src/pages/stationery/InvoiceDetailPage.tsx:159
-#: src/pages/stationery/SalesReportPage.tsx:100
+#: src/pages/stationery/GiftReportPage.tsx:88
+#: src/pages/stationery/InvoiceDetailPage.tsx:164
+#: src/pages/stationery/SalesReportPage.tsx:101
 #: src/pages/stock/StockDetail.tsx:673
 #: src/pages/stock/StockDetailsPanel.tsx:197
 #: src/tables/build/BuildLineTable.tsx:99
@@ -3953,8 +3953,8 @@ msgstr "Podešavanje nije izabrano"
 #: src/pages/sales/ReturnOrderDetailsPanel.tsx:60
 #: src/pages/sales/SalesOrderDetailsPanel.tsx:60
 #: src/pages/sales/SalesOrderShipmentDetailsPanel.tsx:66
-#: src/pages/stationery/InvoiceDetailPage.tsx:138
-#: src/pages/stationery/ReceivablesReportPage.tsx:138
+#: src/pages/stationery/InvoiceDetailPage.tsx:143
+#: src/pages/stationery/ReceivablesReportPage.tsx:139
 #: src/pages/stock/StockDetailsPanel.tsx:306
 #: src/tables/company/CompanyTable.tsx:126
 #: src/tables/part/PartSalesOrdersTable.tsx:51
@@ -3963,7 +3963,7 @@ msgstr "Podešavanje nije izabrano"
 #: src/tables/sales/SalesOrderParametricTable.tsx:25
 #: src/tables/sales/SalesOrderShipmentTable.tsx:124
 #: src/tables/sales/SalesOrderTable.tsx:87
-#: src/tables/stationery/InvoiceTable.tsx:60
+#: src/tables/stationery/InvoiceTable.tsx:61
 #: src/tables/stock/StockTrackingTable.tsx:197
 msgid "Customer"
 msgstr "Mušterija"
@@ -3981,28 +3981,28 @@ msgstr ""
 msgid "No customers found"
 msgstr ""
 
-#: src/components/stationery/CustomerReceivablesPanel.tsx:63
-#: src/pages/stationery/ReceivablesReportPage.tsx:89
+#: src/components/stationery/CustomerReceivablesPanel.tsx:64
+#: src/pages/stationery/ReceivablesReportPage.tsx:90
 msgid "Total Outstanding"
 msgstr ""
 
-#: src/components/stationery/CustomerReceivablesPanel.tsx:68
+#: src/components/stationery/CustomerReceivablesPanel.tsx:69
 msgid "Outstanding Invoices"
 msgstr ""
 
 #: src/components/stationery/InvoiceStatusBadge.tsx:12
-#: src/pages/stationery/ReceivablesReportPage.tsx:93
+#: src/pages/stationery/ReceivablesReportPage.tsx:94
 msgid "Unpaid"
 msgstr ""
 
 #: src/components/stationery/InvoiceStatusBadge.tsx:13
-#: src/pages/stationery/ReceivablesReportPage.tsx:95
+#: src/pages/stationery/ReceivablesReportPage.tsx:96
 msgid "Partially Paid"
 msgstr ""
 
 #: src/components/stationery/InvoiceStatusBadge.tsx:14
-#: src/pages/stationery/InvoiceDetailPage.tsx:127
-#: src/pages/stationery/ReceivablesReportPage.tsx:98
+#: src/pages/stationery/InvoiceDetailPage.tsx:129
+#: src/pages/stationery/ReceivablesReportPage.tsx:99
 msgid "Paid"
 msgstr ""
 
@@ -4035,6 +4035,7 @@ msgid "Unknown"
 msgstr ""
 
 #: src/components/stationery/ProductPicker.tsx:63
+#: src/components/stationery/RecordSaleButton.tsx:341
 msgid "Product"
 msgstr ""
 
@@ -4054,81 +4055,81 @@ msgstr ""
 msgid "Out of stock"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:20
-#: src/components/stationery/StationeryDashboard.tsx:38
+#: src/components/stationery/ReceivePaymentButton.tsx:22
+#: src/components/stationery/StationeryDashboard.tsx:39
 #: src/components/stationery/TransactionStatusBadge.tsx:21
 #: src/forms/StationeryForms.tsx:123
-#: src/tables/stationery/PaymentHistoryTable.tsx:16
+#: src/tables/stationery/PaymentHistoryTable.tsx:18
 msgid "Cash"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:21
-#: src/components/stationery/StationeryDashboard.tsx:39
+#: src/components/stationery/ReceivePaymentButton.tsx:23
+#: src/components/stationery/StationeryDashboard.tsx:40
 #: src/components/stationery/TransactionStatusBadge.tsx:22
 #: src/forms/StationeryForms.tsx:124
-#: src/tables/stationery/PaymentHistoryTable.tsx:17
+#: src/tables/stationery/PaymentHistoryTable.tsx:19
 msgid "Online"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:22
+#: src/components/stationery/ReceivePaymentButton.tsx:24
 #: src/forms/StationeryForms.tsx:125
-#: src/tables/stationery/PaymentHistoryTable.tsx:18
+#: src/tables/stationery/PaymentHistoryTable.tsx:20
 msgid "Cheque"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:75
-#: src/pages/stationery/InvoiceDetailPage.tsx:84
+#: src/components/stationery/ReceivePaymentButton.tsx:80
+#: src/pages/stationery/InvoiceDetailPage.tsx:85
 msgid "Payment recorded"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:81
+#: src/components/stationery/ReceivePaymentButton.tsx:86
 msgid "Could not record payment"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:88
-#: src/components/stationery/RecordSaleButton.tsx:213
-#: src/components/stationery/StationeryDashboard.tsx:129
+#: src/components/stationery/ReceivePaymentButton.tsx:93
+#: src/components/stationery/RecordSaleButton.tsx:264
+#: src/components/stationery/StationeryDashboard.tsx:133
 #: src/components/tables/Filter.tsx:186
-#: src/pages/stationery/InvoiceDetailPage.tsx:129
-#: src/pages/stationery/ReceivablesReportPage.tsx:111
-#: src/pages/stationery/ReceivablesReportPage.tsx:139
+#: src/pages/stationery/InvoiceDetailPage.tsx:134
+#: src/pages/stationery/ReceivablesReportPage.tsx:112
+#: src/pages/stationery/ReceivablesReportPage.tsx:140
 #: src/tables/part/PartSalesOrdersTable.tsx:93
 #: src/tables/sales/SalesOrderAllocationTable.tsx:91
-#: src/tables/stationery/InvoiceTable.tsx:80
+#: src/tables/stationery/InvoiceTable.tsx:82
 #: src/tables/stock/TransferOrderAllocationTable.tsx:81
 msgid "Outstanding"
 msgstr "Neizvršeno"
 
-#: src/components/stationery/ReceivePaymentButton.tsx:99
-#: src/components/stationery/ReceivePaymentButton.tsx:107
+#: src/components/stationery/ReceivePaymentButton.tsx:105
+#: src/components/stationery/ReceivePaymentButton.tsx:113
 msgid "Receive Payment"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:125
+#: src/components/stationery/ReceivePaymentButton.tsx:132
 msgid "Invoice"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:129
+#: src/components/stationery/ReceivePaymentButton.tsx:136
 msgid "Select an outstanding invoice"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:134
+#: src/components/stationery/ReceivePaymentButton.tsx:141
 msgid "No outstanding invoices for this customer"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:139
+#: src/components/stationery/ReceivePaymentButton.tsx:146
 #: src/forms/StationeryForms.tsx:114
-#: src/tables/stationery/PaymentHistoryTable.tsx:29
+#: src/tables/stationery/PaymentHistoryTable.tsx:31
 msgid "Amount"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:147
+#: src/components/stationery/ReceivePaymentButton.tsx:154
 #: src/pages/Index/Settings/AccountSettings/SecurityContent.tsx:152
-#: src/tables/stationery/PaymentHistoryTable.tsx:34
+#: src/tables/stationery/PaymentHistoryTable.tsx:37
 msgid "Method"
 msgstr ""
 
-#: src/components/stationery/ReceivePaymentButton.tsx:154
+#: src/components/stationery/ReceivePaymentButton.tsx:161
 #: src/components/tables/ColumnRenderers.tsx:541
 #: src/forms/StationeryForms.tsx:135
 #: src/pages/build/BuildOrderDetailsPanel.tsx:90
@@ -4139,93 +4140,101 @@ msgstr ""
 #: src/pages/stock/TransferOrderDetailsPanel.tsx:23
 #: src/tables/build/BuildAllocatedStockTable.tsx:113
 #: src/tables/build/BuildLineTable.tsx:370
-#: src/tables/stationery/InvoiceTable.tsx:46
-#: src/tables/stationery/PaymentHistoryTable.tsx:41
+#: src/tables/stationery/InvoiceTable.tsx:47
+#: src/tables/stationery/PaymentHistoryTable.tsx:44
 msgid "Reference"
 msgstr "Referenca"
 
-#: src/components/stationery/ReceivePaymentButton.tsx:164
-#: src/pages/stationery/InvoiceDetailPage.tsx:81
-#: src/pages/stationery/InvoiceDetailPage.tsx:115
+#: src/components/stationery/ReceivePaymentButton.tsx:171
+#: src/pages/stationery/InvoiceDetailPage.tsx:82
+#: src/pages/stationery/InvoiceDetailPage.tsx:116
 msgid "Record Payment"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:43
-#: src/components/stationery/StationeryDashboard.tsx:37
-#: src/pages/stationery/SalesReportPage.tsx:31
+#: src/components/stationery/RecordSaleButton.tsx:49
+#: src/components/stationery/StationeryDashboard.tsx:38
+#: src/pages/stationery/SalesReportPage.tsx:32
 msgid "B2B Credit"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:49
+#: src/components/stationery/RecordSaleButton.tsx:55
 msgid "Cash Sale"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:55
+#: src/components/stationery/RecordSaleButton.tsx:61
 msgid "Online Sale"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:61
+#: src/components/stationery/RecordSaleButton.tsx:67
 #: src/components/stationery/TransactionStatusBadge.tsx:23
 msgid "Gift"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:169
+#: src/components/stationery/RecordSaleButton.tsx:217
 msgid "Something went wrong recording this sale"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:192
-#: src/components/stationery/RecordSaleButton.tsx:198
-#: src/components/stationery/RecordSaleButton.tsx:234
+#: src/components/stationery/RecordSaleButton.tsx:242
+#: src/components/stationery/RecordSaleButton.tsx:248
+#: src/components/stationery/RecordSaleButton.tsx:291
 msgid "New Sale"
 msgstr ""
 
 #. placeholder {0}: success.reference
-#: src/components/stationery/RecordSaleButton.tsx:210
+#: src/components/stationery/RecordSaleButton.tsx:261
 msgid "Invoice {0} created"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:213
-#: src/components/stationery/RecordSaleButton.tsx:226
-#: src/components/stationery/RecordSaleButton.tsx:329
-#: src/pages/stationery/InvoiceDetailPage.tsx:126
-#: src/tables/stationery/InvoiceTable.tsx:75
+#: src/components/stationery/RecordSaleButton.tsx:264
+#: src/components/stationery/RecordSaleButton.tsx:284
+#: src/components/stationery/RecordSaleButton.tsx:417
+#: src/pages/stationery/InvoiceDetailPage.tsx:127
+#: src/tables/stationery/InvoiceTable.tsx:76
 msgid "Total"
 msgstr "Total"
 
-#: src/components/stationery/RecordSaleButton.tsx:222
+#: src/components/stationery/RecordSaleButton.tsx:273
 msgid "Sale recorded"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:243
+#: src/components/stationery/RecordSaleButton.tsx:300
 msgid "View Invoice"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:295
+#: src/components/stationery/RecordSaleButton.tsx:348
+msgid "Remove product"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:370
 #: src/forms/StationeryForms.tsx:43
 #: src/forms/StationeryForms.tsx:85
 msgid "Unit Value"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:295
+#: src/components/stationery/RecordSaleButton.tsx:370
 msgid "Gift Value"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:301
+#: src/components/stationery/RecordSaleButton.tsx:376
 msgid "Required for gifts"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:307
+#: src/components/stationery/RecordSaleButton.tsx:389
+msgid "Add Product"
+msgstr ""
+
+#: src/components/stationery/RecordSaleButton.tsx:395
 #: src/forms/StationeryForms.tsx:98
-#: src/pages/stationery/InvoiceDetailPage.tsx:133
-#: src/tables/stationery/InvoiceTable.tsx:72
+#: src/pages/stationery/InvoiceDetailPage.tsx:138
+#: src/tables/stationery/InvoiceTable.tsx:73
 msgid "Due Date"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:308
+#: src/components/stationery/RecordSaleButton.tsx:396
 msgid "Defaults to 30 days from today"
 msgstr ""
 
-#: src/components/stationery/RecordSaleButton.tsx:343
+#: src/components/stationery/RecordSaleButton.tsx:431
 msgid "Complete Sale"
 msgstr ""
 
@@ -4239,80 +4248,80 @@ msgid "To"
 msgstr ""
 
 #: src/components/stationery/ReportTabs.tsx:18
-#: src/pages/stationery/GiftReportPage.tsx:68
+#: src/pages/stationery/GiftReportPage.tsx:69
 msgid "Gifts"
 msgstr ""
 
-#: src/components/stationery/RestockButton.tsx:44
+#: src/components/stationery/RestockButton.tsx:48
 #: src/forms/StockForms.tsx:2000
 msgid "Stock added"
 msgstr "Zaliha dodata"
 
-#: src/components/stationery/RestockButton.tsx:50
+#: src/components/stationery/RestockButton.tsx:54
 msgid "Could not add stock"
 msgstr ""
 
-#: src/components/stationery/RestockButton.tsx:63
-#: src/components/stationery/RestockButton.tsx:71
+#: src/components/stationery/RestockButton.tsx:68
+#: src/components/stationery/RestockButton.tsx:76
 #: src/components/stationery/TransactionStatusBadge.tsx:24
 msgid "Restock"
 msgstr ""
 
-#: src/components/stationery/RestockButton.tsx:89
+#: src/components/stationery/RestockButton.tsx:95
 msgid "Quantity to Add"
 msgstr ""
 
-#: src/components/stationery/RestockButton.tsx:108
+#: src/components/stationery/RestockButton.tsx:114
 #: src/forms/StockForms.tsx:1999
 #: src/hooks/UseStockAdjustActions.tsx:112
 msgid "Add Stock"
 msgstr "Dodaj zalihu"
 
-#: src/components/stationery/StationeryDashboard.tsx:115
+#: src/components/stationery/StationeryDashboard.tsx:119
 msgid "Today's Sales"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:122
+#: src/components/stationery/StationeryDashboard.tsx:126
 msgid "Collected Today"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:142
+#: src/components/stationery/StationeryDashboard.tsx:146
 msgid "No permission to view"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:150
+#: src/components/stationery/StationeryDashboard.tsx:154
 msgid "No sales recorded yet"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:151
+#: src/components/stationery/StationeryDashboard.tsx:155
 msgid "Use \"New Sale\" above to record your first transaction."
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:159
+#: src/components/stationery/StationeryDashboard.tsx:163
 msgid "Sales Today by Type"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:169
+#: src/components/stationery/StationeryDashboard.tsx:173
 msgid "No sales yet today"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:195
+#: src/components/stationery/StationeryDashboard.tsx:199
 msgid "Recent Activity"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:205
+#: src/components/stationery/StationeryDashboard.tsx:209
 msgid "Nothing recorded yet"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:220
+#: src/components/stationery/StationeryDashboard.tsx:224
 msgid "Outstanding Customers"
 msgstr ""
 
-#: src/components/stationery/StationeryDashboard.tsx:222
+#: src/components/stationery/StationeryDashboard.tsx:226
 msgid "View all"
 msgstr "View all"
 
-#: src/components/stationery/StationeryDashboard.tsx:232
+#: src/components/stationery/StationeryDashboard.tsx:236
 msgid "No outstanding balances"
 msgstr ""
 
@@ -4767,7 +4776,7 @@ msgstr ""
 #: src/tables/settings/CustomStateTable.tsx:79
 #: src/tables/settings/EmailTable.tsx:95
 #: src/tables/settings/ImportSessionTable.tsx:135
-#: src/tables/stationery/InvoiceTable.tsx:85
+#: src/tables/stationery/InvoiceTable.tsx:88
 #: src/tables/stock/StockItemTable.tsx:202
 #: src/tables/stock/StockTrackingTable.tsx:83
 msgid "Status"
@@ -4883,7 +4892,7 @@ msgstr "Ukloni filter"
 #: src/components/tables/FilterSelectDrawer.tsx:290
 #: src/pages/Index/Settings/AdminCenter/IdentityManagementPanel.tsx:624
 #: src/pages/part/PartStockHistoryDetail.tsx:67
-#: src/pages/stationery/GiftReportPage.tsx:88
+#: src/pages/stationery/GiftReportPage.tsx:89
 #: src/tables/part/PartTestResultTable.tsx:210
 #: src/tables/stock/StockItemTestResultTable.tsx:205
 msgid "Value"
@@ -6767,7 +6776,7 @@ msgstr "Količina po jedinici"
 #: src/pages/part/pricing/PurchaseHistoryPanel.tsx:72
 #: src/pages/part/pricing/PurchaseHistoryPanel.tsx:129
 #: src/pages/part/pricing/SupplierPricingPanel.tsx:67
-#: src/pages/stationery/InvoiceDetailPage.tsx:160
+#: src/pages/stationery/InvoiceDetailPage.tsx:165
 #: src/pages/stock/StockDetailsPanel.tsx:323
 #: src/tables/bom/BomTable.tsx:314
 #: src/tables/general/ExtraLineItemTable.tsx:73
@@ -10669,7 +10678,7 @@ msgstr "Detalji narudžbine"
 #: src/pages/sales/ReturnOrderDetailsPanel.tsx:91
 #: src/pages/sales/SalesOrderDetail.tsx:154
 #: src/pages/sales/SalesOrderDetail.tsx:163
-#: src/pages/stationery/InvoiceDetailPage.tsx:153
+#: src/pages/stationery/InvoiceDetailPage.tsx:158
 #: src/pages/stock/TransferOrderDetail.tsx:112
 #: src/pages/stock/TransferOrderDetailsPanel.tsx:74
 msgid "Line Items"
@@ -10968,107 +10977,107 @@ msgstr ""
 msgid "Delivery Date"
 msgstr "Datum dostave"
 
-#: src/pages/stationery/GiftReportPage.tsx:59
+#: src/pages/stationery/GiftReportPage.tsx:60
 msgid "Gift Report"
 msgstr ""
 
-#: src/pages/stationery/GiftReportPage.tsx:70
-#: src/pages/stationery/SalesReportPage.tsx:77
+#: src/pages/stationery/GiftReportPage.tsx:71
+#: src/pages/stationery/SalesReportPage.tsx:78
 #: src/tables/part/PartPurchaseOrdersTable.tsx:88
 #: src/tables/purchasing/PurchaseOrderLineItemTable.tsx:205
 msgid "Total Quantity"
 msgstr "Ukupna količina"
 
-#: src/pages/stationery/GiftReportPage.tsx:74
+#: src/pages/stationery/GiftReportPage.tsx:75
 msgid "Total Value"
 msgstr ""
 
-#: src/pages/stationery/GiftReportPage.tsx:80
+#: src/pages/stationery/GiftReportPage.tsx:81
 msgid "Breakdown by Part"
 msgstr ""
 
-#: src/pages/stationery/InvoiceDetailPage.tsx:98
+#: src/pages/stationery/InvoiceDetailPage.tsx:99
 msgid "Invoice not found"
 msgstr ""
 
-#: src/pages/stationery/InvoiceDetailPage.tsx:143
+#: src/pages/stationery/InvoiceDetailPage.tsx:148
 msgid "View Customer"
 msgstr ""
 
-#: src/pages/stationery/InvoiceDetailPage.tsx:147
-#: src/tables/stationery/InvoiceTable.tsx:68
+#: src/pages/stationery/InvoiceDetailPage.tsx:152
+#: src/tables/stationery/InvoiceTable.tsx:69
 msgid "Invoice Date"
 msgstr ""
 
-#: src/pages/stationery/InvoiceDetailPage.tsx:161
+#: src/pages/stationery/InvoiceDetailPage.tsx:166
 msgid "Line Total"
 msgstr ""
 
-#: src/pages/stationery/InvoiceDetailPage.tsx:179
+#: src/pages/stationery/InvoiceDetailPage.tsx:184
 msgid "Payment History"
 msgstr ""
 
-#: src/pages/stationery/ReceivablesReportPage.tsx:70
+#: src/pages/stationery/ReceivablesReportPage.tsx:71
 msgid "Receivables Report"
 msgstr ""
 
-#: src/pages/stationery/ReceivablesReportPage.tsx:80
+#: src/pages/stationery/ReceivablesReportPage.tsx:81
 msgid "Total Invoiced"
 msgstr ""
 
-#: src/pages/stationery/ReceivablesReportPage.tsx:84
+#: src/pages/stationery/ReceivablesReportPage.tsx:85
 msgid "Total Collected"
 msgstr ""
 
-#: src/pages/stationery/ReceivablesReportPage.tsx:103
-#: src/tables/stationery/InvoiceTable.tsx:90
+#: src/pages/stationery/ReceivablesReportPage.tsx:104
+#: src/tables/stationery/InvoiceTable.tsx:93
 msgid "Aging"
 msgstr ""
 
-#: src/pages/stationery/ReceivablesReportPage.tsx:109
+#: src/pages/stationery/ReceivablesReportPage.tsx:110
 msgid "Bucket"
 msgstr ""
 
-#: src/pages/stationery/ReceivablesReportPage.tsx:110
+#: src/pages/stationery/ReceivablesReportPage.tsx:111
 msgid "Invoice Count"
 msgstr ""
 
-#: src/pages/stationery/ReceivablesReportPage.tsx:132
+#: src/pages/stationery/ReceivablesReportPage.tsx:133
 msgid "Outstanding by Customer"
 msgstr ""
 
-#: src/pages/stationery/SalesReportPage.tsx:32
+#: src/pages/stationery/SalesReportPage.tsx:33
 msgid "B2C Cash"
 msgstr ""
 
-#: src/pages/stationery/SalesReportPage.tsx:33
+#: src/pages/stationery/SalesReportPage.tsx:34
 msgid "B2C Online"
 msgstr ""
 
-#: src/pages/stationery/SalesReportPage.tsx:63
+#: src/pages/stationery/SalesReportPage.tsx:64
 msgid "Sales Report"
 msgstr ""
 
-#: src/pages/stationery/SalesReportPage.tsx:73
-#: src/pages/stationery/SalesReportPage.tsx:99
+#: src/pages/stationery/SalesReportPage.tsx:74
+#: src/pages/stationery/SalesReportPage.tsx:100
 msgid "Transactions"
 msgstr ""
 
-#: src/pages/stationery/SalesReportPage.tsx:81
-#: src/pages/stationery/SalesReportPage.tsx:101
+#: src/pages/stationery/SalesReportPage.tsx:82
+#: src/pages/stationery/SalesReportPage.tsx:102
 msgid "Transaction Value"
 msgstr ""
 
-#: src/pages/stationery/SalesReportPage.tsx:85
-#: src/pages/stationery/SalesReportPage.tsx:102
+#: src/pages/stationery/SalesReportPage.tsx:86
+#: src/pages/stationery/SalesReportPage.tsx:103
 msgid "Collected Value"
 msgstr ""
 
-#: src/pages/stationery/SalesReportPage.tsx:92
+#: src/pages/stationery/SalesReportPage.tsx:93
 msgid "Breakdown by Sale Type"
 msgstr ""
 
-#: src/pages/stationery/SalesReportPage.tsx:98
+#: src/pages/stationery/SalesReportPage.tsx:99
 msgid "Sale Type"
 msgstr ""
 
@@ -14476,11 +14485,11 @@ msgstr ""
 msgid "Error updating user"
 msgstr ""
 
-#: src/tables/stationery/InvoiceTable.tsx:103
+#: src/tables/stationery/InvoiceTable.tsx:106
 msgid "No invoices found"
 msgstr ""
 
-#: src/tables/stationery/PaymentHistoryTable.tsx:52
+#: src/tables/stationery/PaymentHistoryTable.tsx:55
 msgid "No payments recorded yet"
 msgstr ""
 
