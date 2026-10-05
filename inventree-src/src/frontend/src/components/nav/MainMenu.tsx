@@ -11,10 +11,7 @@ import {
   IconChevronDown,
   IconLogout,
   IconMoonStars,
-  IconSettings,
-  IconSun,
-  IconUserBolt,
-  IconUserCog
+  IconSun
 } from '@tabler/icons-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
@@ -25,9 +22,7 @@ import { vars } from '../../theme';
 
 export function MainMenu() {
   const navigate = useNavigate();
-  const [user, username] = useUserState(
-    useShallow((state) => [state.user, state.username])
-  );
+  const [username] = useUserState(useShallow((state) => [state.username]));
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   return (
@@ -51,32 +46,6 @@ export function MainMenu() {
           <Menu.Label>
             <Trans>Settings</Trans>
           </Menu.Label>
-          <Menu.Item
-            leftSection={<IconUserCog />}
-            component={Link}
-            to='/settings/user'
-          >
-            <Trans>User Settings</Trans>
-          </Menu.Item>
-          {user?.is_staff && (
-            <Menu.Item
-              leftSection={<IconSettings />}
-              component={Link}
-              to='/settings/system'
-            >
-              <Trans>System Settings</Trans>
-            </Menu.Item>
-          )}
-          {user?.is_staff && (
-            <Menu.Item
-              leftSection={<IconUserBolt />}
-              component={Link}
-              to='/settings/admin'
-            >
-              <Trans>Admin Center</Trans>
-            </Menu.Item>
-          )}
-          {user?.is_staff && <Menu.Divider />}
           <Menu.Item
             onClick={toggleColorScheme}
             leftSection={

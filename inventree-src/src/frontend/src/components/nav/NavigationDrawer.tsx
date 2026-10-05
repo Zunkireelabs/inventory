@@ -152,21 +152,22 @@ function DrawerContent({ closeFunc }: Readonly<{ closeFunc?: () => void }>) {
         id: 'user-settings',
         title: t`User Settings`,
         link: '/settings/user',
-        icon: 'user'
+        icon: 'user',
+        hidden: true
       },
       {
         id: 'system-settings',
         title: t`System Settings`,
         link: '/settings/system',
         icon: 'system',
-        hidden: !user.isStaff()
+        hidden: true
       },
       {
         id: 'admin-center',
         title: t`Admin Center`,
         link: '/settings/admin',
         icon: 'admin',
-        hidden: !user.isStaff()
+        hidden: true
       }
     ];
   }, [user]);
