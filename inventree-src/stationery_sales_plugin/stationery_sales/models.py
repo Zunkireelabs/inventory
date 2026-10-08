@@ -10,6 +10,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
+from InvenTree.helpers import pui_url
+
 from .validators import generate_next_invoice_reference, validate_invoice_reference
 
 
@@ -96,6 +98,10 @@ class Invoice(InvenTree.models.ReferenceIndexingMixin, models.Model):
 
     def __str__(self):
         return f'{self.reference} — {self.customer.name}'
+
+    def get_absolute_url(self) -> str:
+        """Get the frontend URL for this invoice."""
+        return pui_url(f'/receivables/invoice/{self.pk}')
 
     def save(self, *args, **kwargs):
         # Keep reference_int in sync on every save — ReferenceIndexingMixin's

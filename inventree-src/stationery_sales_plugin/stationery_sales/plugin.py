@@ -4,10 +4,10 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 from plugin import InvenTreePlugin
-from plugin.mixins import AppMixin, SettingsMixin, UrlsMixin
+from plugin.mixins import AppMixin, ScheduleMixin, SettingsMixin, UrlsMixin
 
 
-class StationerySalesPlugin(SettingsMixin, AppMixin, UrlsMixin, InvenTreePlugin):
+class StationerySalesPlugin(ScheduleMixin, SettingsMixin, AppMixin, UrlsMixin, InvenTreePlugin):
     """Adds sale-type tracking (B2B credit / B2C cash / B2C online / Gift /
     Restock / Correction) and B2B receivables (invoices/payments) on top of
     InvenTree's stock model, without modifying core.
@@ -30,6 +30,17 @@ class StationerySalesPlugin(SettingsMixin, AppMixin, UrlsMixin, InvenTreePlugin)
             'default': 'INV-{ref:04d}',
         }
     }
+
+    SCHEDULED_TASKS = {
+        'check_invoice_due_dates': {'func': 'check_invoice_due_dates', 'schedule': 'D'}
+    }
+
+    def check_invoice_due_dates(self):
+        # Deferred import: see setup_urls() below for why - plugin app isn't
+        # registered in INSTALLED_APPS yet when this class is instantiated.
+        from stationery_sales.tasks import check_invoice_due_dates
+
+        check_invoice_due_dates()
 
     def setup_urls(self):
         # UrlsMixin.__init__ calls setup_urls() immediately at plugin
