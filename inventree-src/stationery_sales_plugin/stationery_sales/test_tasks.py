@@ -44,6 +44,8 @@ class CheckInvoiceDueDatesTest(TestCase):
         message = messages.first()
         self.assertEqual(message.user, self.active_user)
         self.assertIn(invoice.reference, message.message)
+        self.assertIn(self.customer.name, message.message)
+        self.assertIn(f'/company/{self.customer.pk}/receivables', message.link)
 
     def test_does_not_notify_inactive_users(self):
         today = timezone.localdate()
@@ -62,8 +64,11 @@ class CheckInvoiceDueDatesTest(TestCase):
 
         messages = NotificationMessage.objects.filter(category='stationerysales.invoice_overdue')
         self.assertEqual(messages.count(), 1)
-        self.assertEqual(messages.first().user, self.active_user)
-        self.assertIn(invoice.reference, messages.first().message)
+        message = messages.first()
+        self.assertEqual(message.user, self.active_user)
+        self.assertIn(invoice.reference, message.message)
+        self.assertIn(self.customer.name, message.message)
+        self.assertIn(f'/company/{self.customer.pk}/receivables', message.link)
 
     def test_does_not_notify_for_invoice_due_in_five_days(self):
         today = timezone.localdate()
