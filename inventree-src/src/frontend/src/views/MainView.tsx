@@ -1,15 +1,21 @@
 import '@mantine/core/styles.css';
-import { useViewportSize } from '@mantine/hooks';
 import { type ComponentType, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 import { setApiDefaults } from '../App';
 import { useLocalState } from '../states/LocalState';
 
+// Uses window.innerWidth/innerHeight directly (snapshotted, not subscribed
+// to every resize) rather than useViewportSize(): on mobile browsers,
+// opening the on-screen keyboard shrinks the visual viewport height below
+// the 425px threshold while it animates in, which previously flipped this
+// check back and forth and remounted the entire Mobile/Desktop view tree
+// (each view mounts its own BrowserRouter) — visible as repeated blinking.
+// Re-checking only on 'orientationchange' still catches real device
+// rotation without reacting to keyboard-driven height changes.
 function checkMobile() {
-  const { height, width } = useViewportSize();
-  if (width < 425 || height < 425) return true;
-  return false;
+  const { innerWidth: width, innerHeight: height } = window;
+  return width < 425 || height < 425;
 }
 
 // Import both views eagerly (outside React.lazy/Suspense): a lazy component
@@ -43,11 +49,25 @@ export default function MainView() {
     mobileViewPromise.then((Component) => setMobileView(() => Component));
   }, []);
 
+  // Snapshot the mobile/desktop decision once on mount, and only
+  // re-check it on an actual device rotation. Re-deriving this on every
+  // resize (e.g. via a hook subscribed to window resize events) flips it
+  // spuriously whenever an on-screen keyboard opens/closes, which remounts
+  // the entire view tree below.
+  const [isSmallViewport, setIsSmallViewport] = useState(checkMobile);
+
+  useEffect(() => {
+    const handleOrientationChange = () => setIsSmallViewport(checkMobile());
+    window.addEventListener('orientationchange', handleOrientationChange);
+    return () =>
+      window.removeEventListener('orientationchange', handleOrientationChange);
+  }, []);
+
   // Check if mobile
   const isMobile =
     !allowMobile &&
     window.INVENTREE_SETTINGS.mobile_mode !== 'allow-always' &&
-    checkMobile();
+    isSmallViewport;
 
   const View = isMobile ? MobileView : DesktopView;
 

@@ -31,20 +31,20 @@ export function RecentTransactionRow({
 }: Readonly<{ transaction: RecentTransaction }>) {
   return (
     <Group justify='space-between' wrap='nowrap' py={6}>
-      <Group gap='xs' wrap='nowrap'>
+      <Group gap='xs' wrap='nowrap' style={{ flex: 1, minWidth: 0 }}>
         <TransactionStatusBadge saleType={transaction.sale_type} />
-        <Stack gap={0}>
-          <Text size='sm' fw={500}>
+        <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
+          <Text size='sm' fw={500} truncate>
             {transaction.part_name}
           </Text>
           {transaction.customer_name && (
-            <Text size='xs' c='dimmed'>
+            <Text size='xs' c='dimmed' truncate>
               {transaction.customer_name}
             </Text>
           )}
         </Stack>
       </Group>
-      <Stack gap={0} align='flex-end'>
+      <Stack gap={0} align='flex-end' style={{ flexShrink: 0 }}>
         <Text size='sm' fw={600}>
           {formatMoney(transaction.total_value)}
         </Text>
