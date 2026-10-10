@@ -65,6 +65,7 @@ export function ProductPicker({
     <Select
       label={t`Product`}
       placeholder={t`Search for a product...`}
+      autoComplete='off'
       searchable
       searchValue={search}
       onSearchChange={setSearch}

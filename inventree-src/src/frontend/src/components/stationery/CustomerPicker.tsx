@@ -52,6 +52,7 @@ export function CustomerPicker({
     <Select
       label={t`Customer`}
       placeholder={t`Search for a customer...`}
+      autoComplete='off'
       searchable
       searchValue={search}
       onSearchChange={setSearch}

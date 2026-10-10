@@ -249,6 +249,14 @@ export default function RecordSaleButton({
         size='lg'
         centered
         fullScreen={isMobile}
+        // On mobile, Chrome's native autofill suggestion strip (passwords/
+        // payment/addresses) popping up above the keyboard while typing in
+        // Customer/Product search causes a focus/touch event that Mantine
+        // was reading as a click outside the modal, closing and reopening
+        // it on every keystroke - visible as the whole screen flickering
+        // back to the dashboard. The form has an explicit close (X) button,
+        // so disabling outside-click dismissal here is safe.
+        closeOnClickOutside={false}
       >
         {success ? (
           <Stack align='center' py='md'>
