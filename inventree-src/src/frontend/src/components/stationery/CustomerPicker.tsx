@@ -1,6 +1,6 @@
 import { t } from '@lingui/core/macro';
 import { Select } from '@mantine/core';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 import { api } from '../../App';
@@ -35,7 +35,15 @@ export function CustomerPicker({
         value: String(item.pk),
         label: item.name
       }));
-    }
+    },
+    // Without this, every debounce tick swaps queryKey and TanStack Query
+    // resets `data` to undefined while the new request is in flight, so the
+    // dropdown options collapse to empty ("Searching...") and repopulate on
+    // every keystroke pause — visible as the list (and surrounding modal,
+    // on a small/fullScreen mobile viewport) flashing repeatedly while
+    // typing. Keeping the previous page's results displayed until the new
+    // ones arrive removes that flash.
+    placeholderData: keepPreviousData
   });
 
   const options = query.data ?? [];

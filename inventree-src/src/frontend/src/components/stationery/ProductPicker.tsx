@@ -1,6 +1,6 @@
 import { t } from '@lingui/core/macro';
 import { Select, Text } from '@mantine/core';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 import { api } from '../../App';
@@ -53,7 +53,10 @@ export function ProductPicker({
           partName
         };
       }) as StockItemOption[];
-    }
+    },
+    // See CustomerPicker for why this is needed — avoids the options list
+    // (and modal) flashing empty between debounced keystrokes.
+    placeholderData: keepPreviousData
   });
 
   const options = query.data ?? [];
